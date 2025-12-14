@@ -1,0 +1,418 @@
+/* --- Global Reset & Variables --- */
+:host {
+    display: block;
+    height: 100vh;
+    font-family: 'Poppins', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Modern Font */
+    --primary-color: #10b981; /* Mint Green */
+    --primary-hover: #059669;
+    --primary-light: #d1fae5;
+    --danger-color: #ef4444; /* Red */
+    --danger-hover: #dc2626;
+    --bg-color: #f3f4f6;
+    --card-bg: #ffffff;
+    --text-color: #1e293b;
+    --text-secondary: #64748b;
+    --border-color: #e2e8f0;
+    --shadow-sm: 0 1px 3px rgba(0,0,0,0.1);
+    --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.1);
+    --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.1);
+}
+
+/* --- Main Layout --- */
+.dashboard-container {
+    display: flex;
+    height: 100vh;
+    background-color: var(--bg-color);
+    overflow: hidden;
+}
+
+/* --- SIDEBAR --- */
+.sidebar {
+    width: 280px;
+    background-color: var(--card-bg);
+    border-right: 1px solid var(--border-color);
+    display: flex;
+    flex-direction: column;
+    padding: 24px;
+    box-shadow: var(--shadow-sm);
+    z-index: 10;
+}
+
+.sidebar-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--primary-color);
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    order: 1; /* Keeps Title at top */
+}
+
+.sidebar-title::before {
+    content: '📁'; /* Simple logo icon */
+}
+
+/* Folder Tree Styles */
+.folder-tree {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    flex: 1;
+    overflow-y: auto;
+    order: 3; /* Push Folder Tree below the Create Section */
+}
+
+.folder-tree li {
+    padding: 12px 16px;
+    cursor: pointer;
+    border-radius: 8px;
+    color: var(--text-color);
+    font-weight: 500;
+    transition: all 0.2s ease;
+    margin-bottom: 6px;
+    display: flex;
+    flex-direction: column;
+}
+
+.folder-tree li:hover {
+    background-color: var(--primary-light);
+    color: var(--primary-hover);
+    transform: translateX(4px);
+}
+
+.folder-tree li.active {
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-hover));
+    color: white;
+    box-shadow: var(--shadow-md);
+}
+
+/* Subfolder Styling (Nested) */
+.subfolder-list {
+    list-style: none;
+    padding-left: 15px;
+    margin-top: 8px;
+    border-left: 2px solid var(--border-color);
+}
+
+.subfolder-list li {
+    font-size: 0.9rem;
+    padding: 8px 12px;
+    color: var(--text-secondary);
+    margin-bottom: 2px;
+}
+
+.subfolder-list li:hover {
+    background-color: transparent;
+    color: var(--primary-color);
+    transform: none; /* No movement for subfolders */
+    text-decoration: underline;
+}
+
+/* Create Folder Section */
+.create-folder {
+    background-color: #f8fafc;
+    padding: 20px;
+    border-radius: 16px;
+    margin-top: 0;
+    margin-bottom: 20px; /* Space between create section and tree */
+    border: 1px solid var(--border-color);
+    order: 2; /* Moves this section UP, right under title */
+}
+
+.create-folder h3 {
+    font-size: 1rem;
+    margin-top: 0;
+    margin-bottom: 15px;
+    color: var(--text-color);
+    font-weight: 600;
+}
+
+.create-folder input {
+    width: 100%;
+    padding: 10px 14px;
+    margin-bottom: 10px;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    outline: none;
+    font-size: 0.9rem;
+    box-sizing: border-box;
+    transition: 0.3s;
+}
+
+.create-folder input:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+}
+
+/* --- MAIN CONTENT --- */
+.main-content {
+    flex: 1;
+    padding: 40px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+}
+
+/* Breadcrumb */
+.breadcrumb {
+    font-size: 1rem;
+    color: var(--text-secondary);
+    background: white;
+    padding: 16px 24px;
+    border-radius: 12px;
+    box-shadow: var(--shadow-sm);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.breadcrumb span {
+    cursor: pointer;
+    font-weight: 600;
+    transition: color 0.2s;
+}
+
+.breadcrumb span:hover {
+    color: var(--primary-color);
+}
+
+.breadcrumb span:last-child {
+    color: var(--text-color);
+    cursor: default;
+}
+
+.breadcrumb span:not(:last-child)::after {
+    content: '/';
+    margin-left: 8px;
+    color: #cbd5e1;
+}
+
+/* Sections Headers */
+section h2 {
+    font-size: 1.4rem;
+    color: var(--text-color);
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+section h2::before {
+    content: '';
+    display: block;
+    width: 6px;
+    height: 24px;
+    background-color: var(--primary-color);
+    border-radius: 4px;
+}
+
+/* --- FOLDER GRID --- */
+.folder-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 24px;
+}
+
+.folder-card {
+    background: white;
+    padding: 24px;
+    border-radius: 16px;
+    box-shadow: var(--shadow-sm);
+    text-align: center;
+    transition: all 0.3s ease;
+    border: 1px solid transparent;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    cursor: pointer;
+}
+
+.folder-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-lg);
+    border-color: var(--primary-light);
+}
+
+.folder-card span {
+    font-weight: 600;
+    color: var(--text-color);
+    font-size: 1.1rem;
+}
+
+.folder-card span:before {
+    content: '📁';
+    display: block;
+    font-size: 3rem;
+    margin-bottom: 8px;
+    filter: drop-shadow(0 4px 2px rgba(0,0,0,0.1));
+}
+
+/* --- FILE GRID --- */
+.file-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 24px;
+}
+
+.file-card {
+    background: white;
+    padding: 20px;
+    border-radius: 16px;
+    box-shadow: var(--shadow-sm);
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    transition: all 0.3s ease;
+    border: 1px solid var(--border-color);
+    position: relative;
+    overflow: hidden;
+}
+
+.file-card:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-md);
+    border-color: var(--primary-light);
+}
+
+.file-card span {
+    font-weight: 600;
+    color: var(--text-color);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 1rem;
+}
+
+.file-card span:before {
+    content: '📄';
+    font-size: 2rem;
+    background: #f1f5f9;
+    padding: 8px;
+    border-radius: 8px;
+}
+
+.file-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    margin-top: auto;
+    padding-top: 15px;
+    border-top: 1px solid #f1f5f9;
+}
+
+/* --- UPLOAD SECTION --- */
+.upload-section {
+    background: white;
+    padding: 30px;
+    border-radius: 16px;
+    box-shadow: var(--shadow-sm);
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 20px;
+    border: 2px dashed var(--border-color);
+}
+
+.upload-section:hover {
+    border-color: var(--primary-color);
+    background-color: #fcfcfc;
+}
+
+.upload-section h2 {
+    width: 100%;
+    border: none;
+    margin-bottom: 10px;
+}
+
+.upload-section input[type="text"] {
+    flex: 1;
+    min-width: 200px;
+    padding: 12px 16px;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    outline: none;
+}
+
+.upload-section input[type="file"] {
+    padding: 12px;
+    background: #f8fafc;
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+    cursor: pointer;
+}
+
+/* --- BUTTONS --- */
+button {
+    padding: 10px 24px;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-size: 0.95rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+}
+
+.btn-primary {
+    background-color: var(--primary-color);
+    color: white;
+    box-shadow: 0 4px 6px rgba(16, 185, 129, 0.2);
+}
+
+.btn-primary:hover {
+    background-color: var(--primary-hover);
+    transform: translateY(-1px);
+    box-shadow: 0 6px 8px rgba(16, 185, 129, 0.3);
+}
+
+.btn-danger {
+    background-color: #fee2e2;
+    color: var(--danger-color);
+    padding: 8px 16px;
+    font-size: 0.85rem;
+}
+
+.btn-danger:hover {
+    background-color: #fecaca;
+    color: var(--danger-hover);
+}
+
+/* --- Responsive --- */
+@media (max-width: 768px) {
+    .dashboard-container {
+        flex-direction: column;
+        overflow: auto;
+    }
+
+    .sidebar {
+        width: 100%;
+        height: auto;
+        border-right: none;
+        border-bottom: 1px solid var(--border-color);
+        padding: 15px;
+    }
+    
+    .folder-tree {
+        max-height: 200px;
+        border-bottom: 1px solid var(--border-color);
+        padding-bottom: 15px;
+    }
+
+    .main-content {
+        padding: 20px;
+        gap: 20px;
+    }
+
+    .upload-section {
+        flex-direction: column;
+        align-items: stretch;
+    }
+}

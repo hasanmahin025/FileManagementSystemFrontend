@@ -1,0 +1,73 @@
+<div class="dashboard-container">
+
+  <!-- Sidebar: Folder Tree -->
+  <aside class="sidebar">
+    <h2 class="sidebar-title">Folders</h2>
+
+    <ul class="folder-tree">
+      <li (click)="loadRootFolders()" [class.active]="currentFolderId === null">Root</li>
+      <ng-container *ngFor="let folder of folderTree">
+        <li class="folder-item" (click)="loadFolderContents(folder.id)">
+          {{ folder.name }}
+        <ul *ngIf="(folder?.children?.length ?? 0) > 0" class="subfolder-list">
+            <ng-container *ngFor="let child of folder.children">
+              <li (click)="loadFolderContents(child.id)">{{ child.name }}</li>
+            </ng-container>
+          </ul>
+        </li>
+      </ng-container>
+    </ul>
+
+    <div class="create-folder">
+      <h3>Create New Folder</h3>
+      <input type="text" placeholder="Folder Name" [(ngModel)]="newFolderName">
+      <input type="text" placeholder="Description" [(ngModel)]="newFolderDescription">
+      <button class="btn-primary" (click)="createFolder()">Create</button>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="main-content">
+
+    <!-- Current Folder Breadcrumb -->
+    <div class="breadcrumb">
+      <span (click)="loadRootFolders()">Root</span>
+      <span *ngIf="currentFolderId">/ Folder {{ currentFolderId }}</span>
+    </div>
+
+    <!-- Subfolders Section -->
+    <section class="folders-section">
+      <h2>Subfolders</h2>
+      <div class="folder-grid">
+        <div class="folder-card" *ngFor="let folder of folders">
+          <span (click)="loadFolderContents(folder.id)">{{ folder.name }}</span>
+          <button class="btn-danger" (click)="deleteFolder(folder.id)">Delete</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Files Section -->
+    <section class="files-section">
+      <h2>Files</h2>
+      <div class="file-grid">
+        <div class="file-card" *ngFor="let file of files">
+          <span>{{ file.fileName }}</span>
+          <div class="file-actions">
+            <button class="btn-primary" (click)="downloadFile(file.id, file.fileName)">Download</button>
+            <button class="btn-danger" (click)="deleteFile(file.id)">Delete</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Upload File Section -->
+    <section class="upload-section">
+      <h2>Upload File</h2>
+      <input type="file" (change)="selectFile($event)">
+      <input type="text" placeholder="Phone Number" [(ngModel)]="userPhoneNumber">
+      <input type="text" placeholder="Notes" [(ngModel)]="notes">
+      <button class="btn-primary" (click)="uploadFile()">Upload</button>
+    </section>
+
+  </main>
+</div>

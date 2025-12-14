@@ -1,0 +1,91 @@
+.navbar{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 50px;
+    background-color: aqua;
+    box-shadow: 0 2px 0 10px rgba(0, 0, 0, 0.05);
+    position: relative;
+    z-index: 100;
+    top: 0;
+
+}
+.logo{
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: black;
+    cursor: pointer;
+    letter-spacing: -0.5px;
+}
+.nav-links{
+    display: flex;
+    gap: 30px;
+    align-items: center;
+}
+
+.nav-links a{
+    text-decoration: none;
+    color: black;
+    font-weight: 500;
+    font-size: 1rem;
+    transition: color 0.3s;
+
+}
+
+.nav-links a:hover , .nav-links a.active{
+    color: black ;
+}
+
+.btn-login{
+
+    padding: 10px 25px;
+    background-color: transparent;
+    border: 2px solid;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.3s;
+    
+}
+
+.btn-login:hover{
+    background-color: green;
+    color: rgb(8,8,8);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+
+
+}
+
+@media (max-width: 768px) {
+    .navbar {
+        padding: 15px 20px;
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .logo {
+        font-size: 1.4rem;
+        margin-bottom: 5px;
+    }
+
+    .nav-links {
+        width: 100%;
+        justify-content: center;
+        gap: 15px;
+        flex-wrap: wrap;
+    }
+
+    .nav-links a {
+        display: block; 
+        font-size: 0.9rem;
+        color: rgb(0, 0, 0);
+    }
+
+    .btn-login {
+        padding: 8px 20px;
+        font-size: 0.9rem;
+    }
+}
+
+
+   

@@ -1,0 +1,143 @@
+:host {
+    display: block;
+    min-height: 100vh;
+    position: relative;
+    background-color: #f8fafc;
+    overflow-x: hidden;
+    font-family: 'Segoe UI', sans-serif;
+
+}
+
+.container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+    padding: 50px 80px;
+    z-index: 5;
+    min-height: 80vh;
+}
+
+.text-content {
+    max-width: 700px;
+    animation: fadeIn 1s ease-out;
+}
+
+.title {
+    font-size: 3.5rem;
+    line-height: 1.2;
+    color: #000000;
+    margin-bottom: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+
+.subtitle {
+    font-size: 1.2rem;
+    color: #000000;
+    margin-bottom: 80px;
+}
+
+.btn-class {
+    background-color: #10b981;
+    color: white;
+    padding: 14px 40px;
+    font-size: 1rem;
+    font-weight: 600;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-align: center;
+    display: inline-block;
+    box-shadow: 0 4px 10px rgba(16, 185, 129, 0.2);
+}
+
+.btn-class:hover {
+    background-color: #059669;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(16, 185, 129, 0.3);
+}
+
+.image-content {
+    flex: 1;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.hero-img {
+    width: 100%;
+    max-width: 800px;
+    height: auto;
+    filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.1));
+    animation: float 6s ease-in-out infinite;
+}
+
+.wave-bg {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    line-height: 0;
+    z-index: 1;
+}
+
+@keyframes float {
+    0% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-20px);
+    }
+
+    100% {
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@media (max-width: 900px) {
+    .container {
+        flex-direction: column;
+        padding: 40px 20px;
+        text-align: center;
+        justify-content: center;
+    }
+
+    .title {
+        font-size: 2.5rem;
+        justify-content: center;
+    }
+
+    .subtitle {
+        margin-bottom: 30px;
+    }
+
+    /* Center the button on mobile */
+    .btn-class {
+        margin: 0 auto; 
+    }
+
+    .image-content {
+        margin-top: 50px;
+        justify-content: center;
+        width: 100%;
+    }
+
+    .hero-img {
+        max-width: 300px;
+    }
+}
