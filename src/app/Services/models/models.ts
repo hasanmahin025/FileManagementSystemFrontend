@@ -22,7 +22,7 @@ export interface FileItem {
     isPrivate?: boolean;
 
     createOn?: string;
-
+    
     updateOn?: string;
 
     notes?: string | null;
@@ -39,7 +39,6 @@ export interface FolderModel {
 
   ownerId?: number;
   ownerName?: string;
-
   createdOn?: string;   
   updatedOn?: string; 
 

@@ -50,11 +50,13 @@ export class AuthService{
     .pipe(
       tap(res => {
         //2Fa
+        /*
         if(res.requires2FA){
           this.storeTwoFactorToken(res.twoFactorToken);
           this.router.navigate(['/2fa']);
           return;
         }
+          */
         //normal
         this.storeTokens(res.token , res.refreshToken);
         this.router.navigate(['/dashboard']);

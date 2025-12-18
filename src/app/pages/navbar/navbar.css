@@ -3,8 +3,8 @@
     justify-content: space-between;
     align-items: center;
     padding: 20px 50px;
-    background-color: aqua;
-    box-shadow: 0 2px 0 10px rgba(0, 0, 0, 0.05);
+    background-color: rgb(33, 226, 226);
+    box-shadow: 0 2px 0 10px rgba(255, 255, 255, 0.05);
     position: relative;
     z-index: 100;
     top: 0;
@@ -13,7 +13,7 @@
 .logo{
     font-size: 1.5rem;
     font-weight: 700;
-    color: black;
+    color: rgb(0, 0, 0);
     cursor: pointer;
     letter-spacing: -0.5px;
 }
@@ -25,7 +25,7 @@
 
 .nav-links a{
     text-decoration: none;
-    color: black;
+    color: rgb(0, 0, 0);
     font-weight: 500;
     font-size: 1rem;
     transition: color 0.3s;
@@ -47,14 +47,7 @@
     
 }
 
-.btn-login:hover{
-    background-color: green;
-    color: rgb(8,8,8);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 
-
-}
 
 @media (max-width: 768px) {
     .navbar {

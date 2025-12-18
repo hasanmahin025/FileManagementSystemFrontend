@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { FolderModel } from './models/models'; 
+import { FolderModel } from './models/models';
 import { environment } from './environment';
 
 @Injectable({
@@ -12,21 +12,21 @@ export class FolderService {
   private http = inject(HttpClient);
   private base = `${environment.apiUrl}/api/folders`
 
- //cretae folder
-createFolder(name: string, description?: string, parentFolderId: number | null = null): Observable<FolderModel> {
-  const payload: any = {
-    name: name,
-    description: description && description.trim().length > 0 ? description : null,
-    parentFolderId: parentFolderId 
-  };
+  //cretae folder
+  createFolder(name: string, description?: string, parentFolderId: number | null = null): Observable<FolderModel> {
+    const payload: any = {
+      name: name,
+      description: description && description.trim().length > 0 ? description : null,
+      parentFolderId: parentFolderId
+    };
 
-  console.log('Folder payload:', payload);
+    console.log('Folder payload:', payload);
 
-  return this.http.post<FolderModel>(`${this.base}`, payload);
-}
+    return this.http.post<FolderModel>(`${this.base}`, payload);
+  }
 
 
-  //Get user's folders (optional parentFolderId filter)
+  //Get user's folders
   getFolders(parentFolderId?: number | null): Observable<FolderModel[]> {
     const params: any = {};
     if (parentFolderId !== undefined) params.parentFolderId = parentFolderId;
@@ -47,30 +47,28 @@ createFolder(name: string, description?: string, parentFolderId: number | null =
     return this.http.put<FolderModel>(`${this.base}/${folderId}`, payload);
   }
 
-  //Delete folder
   deleteFolder(folderId: number, recursive: boolean = false): Observable<{ message: string }> {
-    const params = { recursive: recursive.toString() };
-    return this.http.delete<{ message: string }>(`${this.base}/${folderId}`, { params });
+
+    const params = { recursive: recursive.toString() }
+
+    return this.http.delete<{ message: string }>(`${this.base}/${folderId}`, { params })
+
   }
 
-  //Get folder contents (files + subfolders)
   getFolderContents(folderId: number): Observable<any> {
-    return this.http.get<any>(`${this.base}/${folderId}/contents`);
+    return this.http.get<any>(`${this.base}/${folderId}/contents`)
   }
-
-  //Get root folder contents
   getRootFolders(): Observable<FolderModel[]> {
-    return this.http.get<FolderModel[]>(`${this.base}/root`);
+    return this.http.get<FolderModel[]>(`${this.base}/root`)
   }
 
-  //Get folder tree (for sidebar)
   getFolderTree(): Observable<FolderModel[]> {
-    return this.http.get<FolderModel[]>(`${this.base}/tree`);
+    return this.http.get<FolderModel[]>(`${this.base}/tree`)
   }
 
-  //Move folder
   moveFolder(folderId: number, newParentFolderId?: number | null): Observable<FolderModel> {
-    const payload: any = { newParentFolderId: newParentFolderId ?? null };
+
+    const payload: any = { newParentFolderId: newParentFolderId ?? null }
     return this.http.put<FolderModel>(`${this.base}/${folderId}/move`, payload);
   }
 }
