@@ -1,0 +1,44 @@
+/* src/styles.css */
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap');
+
+:root {
+    /* Modern Color Palette */
+    --primary-color: #6366f1;       /* Indigo-500 */
+    --primary-hover: #4f46e5;       /* Indigo-600 */
+    --primary-light: #e0e7ff;       /* Indigo-100 */
+    --secondary-color: #8b5cf6;     /* Violet-500 */
+    
+    --bg-main: #f8fafc;             /* Slate-50 (Very light gray) */
+    --bg-white: #ffffff;
+    
+    --text-main: #1e293b;           /* Slate-800 */
+    --text-light: #64748b;          /* Slate-500 */
+    --border-color: #e2e8f0;        /* Slate-200 */
+    
+    --sidebar-width: 280px;         /* একটু চওড়া করলাম */
+    --right-panel-width: 340px;
+    
+    /* Soft Shadows for Depth */
+    --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+    --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+    --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+    
+    --radius: 16px;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Plus Jakarta Sans', sans-serif; 
+    background-color: var(--bg-main);
+    color: var(--text-main);
+    overflow: hidden;
+}
+
+* { box-sizing: border-box; outline: none; }
+
+/* Scrollbar সুন্দর করার জন্য */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+::-webkit-scrollbar-thumb:hover { background: #94a3b8; }

@@ -1,73 +1,173 @@
-<div class="dashboard-container">
+<!-- Floating Upload Button -->
+<button class="fab" (click)="toggleUploadPanel()">⬆️</button>
 
-  <!-- Sidebar: Folder Tree -->
-  <aside class="sidebar">
-    <h2 class="sidebar-title">Folders</h2>
+<div class="app-shell">
 
-    <ul class="folder-tree">
-      <li (click)="loadRootFolders()" [class.active]="currentFolderId === null">Root</li>
-      <ng-container *ngFor="let folder of folderTree">
-        <li class="folder-item" (click)="loadFolderContents(folder.id)">
-          {{ folder.name }}
-        <ul *ngIf="(folder?.children?.length ?? 0) > 0" class="subfolder-list">
-            <ng-container *ngFor="let child of folder.children">
-              <li (click)="loadFolderContents(child.id)">{{ child.name }}</li>
-            </ng-container>
-          </ul>
-        </li>
-      </ng-container>
-    </ul>
-
-    <div class="create-folder">
-      <h3>Create New Folder</h3>
-      <input type="text" placeholder="Folder Name" [(ngModel)]="newFolderName">
-      <input type="text" placeholder="Description" [(ngModel)]="newFolderDescription">
-      <button class="btn-primary" (click)="createFolder()">Create</button>
-    </div>
+  <!-- Sidebar -->
+  <aside class="nav-sidebar">
+    <div class="logo">☁️ <span>File Manager</span></div>
+    <nav>
+      <button class="nav-item active"><span>🏠</span> Dashboard</button>
+      <button class="nav-item"><span>👥</span> Shared</button>
+      <button class="nav-item"><span>⭐</span> Favorites</button>
+      <button class="nav-item"><span>🗑️</span> Trash</button>
+    </nav>
   </aside>
 
-  <!-- Main Content -->
-  <main class="main-content">
+  <!-- Main Panel -->
+  <main class="main-panel">
+    <header class="main-header">
+      <div>
+        <h1>My Cloud</h1>
+        <p class="subtitle">Manage your folders and files in one place.</p>
+      </div>
+      <button class="primary-btn" (click)="loadRootFolders()">Root View</button>
+    </header>
 
-    <!-- Current Folder Breadcrumb -->
-    <div class="breadcrumb">
-      <span (click)="loadRootFolders()">Root</span>
-      <span *ngIf="currentFolderId">/ Folder {{ currentFolderId }}</span>
+    <!-- Stats -->
+    <section class="stats-row">
+      <div class="stat-card images">🖼️ Images<br><span>146 files</span></div>
+      <div class="stat-card docs">📄 Documents<br><span>35 files</span></div>
+      <div class="stat-card music">🎵 Music<br><span>771 tracks</span></div>
+    </section>
+
+    <section class="content-row">
+
+      <!-- Folders -->
+      <div class="content-left">
+        <h2>Folders</h2>
+
+        <div class="folder-card-grid">
+
+          <!-- Folder List -->
+          <div class="folder-card" *ngFor="let folder of folders">
+            <div class="folder-card-body">
+              <div class="folder-card-icon" (click)="loadFolderContents(folder.id)">📁</div>
+              <div class="folder-card-name">{{ folder.name }}</div>
+              <button class="small-btn danger" (click)="deleteFolder(folder.id)">Delete</button>
+            </div>
+          </div>
+
+          <!-- Create Folder -->
+          <div class="folder-card create-card">
+            <div class="folder-card-body">
+              <div class="folder-card-icon">➕</div>
+              <input type="text" placeholder="Folder name" [(ngModel)]="newFolderName">
+              <textarea placeholder="Description" [(ngModel)]="newFolderDescription"></textarea>
+              <button class="small-btn primary" (click)="createFolder()">Create</button>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Upload Panel -->
+        <div class="upload-panel" *ngIf="showUploadPanel">
+          <h2>Upload File</h2>
+          <input type="file" (change)="selectFile($event)">
+          <input type="text" placeholder="Notes" [(ngModel)]="notes">
+          <button class="primary-btn" (click)="uploadFile()">Upload</button>
+        </div>
+      </div>
+
+      <!-- Recent Files -->
+      <div class="content-right">
+        <h2>Recent Files</h2>
+
+        <table class="recent-table">
+          <thead>
+            <tr>
+              <th>File</th>
+              <th>Notes</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+
+          <tbody>
+
+            <!-- File Row + Edit Panel -->
+            <ng-container *ngFor="let file of files">
+
+              <!-- File Row -->
+              <tr>
+                <td>🖼️ {{ file.fileName }}</td>
+                <td>{{ file.notes }}</td>
+                <td>
+                  <button class="small-btn" (click)="downloadFile(file.id, file.fileName)">Download</button>
+                  <button class="small-btn danger" (click)="deleteFile(file.id)">Delete</button>
+                  <button class="small-btn" (click)="file.showEdit = !file.showEdit">Edit</button>
+                  <button class="small-btn" (click)="toggleFavorite(file.id)">⭐</button>
+                </td>
+              </tr>
+
+              <!-- Edit Panel -->
+              <tr *ngIf="file.showEdit">
+                <td colspan="3">
+                  <div class="edit-panel">
+
+                    <label>Phone Number</label>
+                    <input type="text" [(ngModel)]="editPhoneNumber">
+
+                    <label>Notes</label>
+                    <input type="text" [(ngModel)]="editNotes">
+
+                    <label>
+                      <input type="checkbox" [(ngModel)]="editIsPrivate">
+                      Private
+                    </label>
+
+                    <button class="primary-btn" (click)="updateFileInfo(file.id)">Save Changes</button>
+
+                  </div>
+                </td>
+              </tr>
+
+            </ng-container>
+
+            <!-- Empty State -->
+            <tr *ngIf="files.length === 0">
+              <td colspan="3" class="empty-row">No files found.</td>
+            </tr>
+
+          </tbody>
+        </table>
+      </div>
+
+    </section>
+  </main>
+
+  <!-- Right Panel -->
+  <aside class="right-panel">
+
+    <div class="storage-card">
+      <h3>Storage</h3>
+      <div class="storage-circle">
+        <span class="storage-used">15 GB</span>
+        <span class="storage-label">of 50 GB</span>
+      </div>
     </div>
 
-    <!-- Subfolders Section -->
-    <section class="folders-section">
-      <h2>Subfolders</h2>
-      <div class="folder-grid">
-        <div class="folder-card" *ngFor="let folder of folders">
-          <span (click)="loadFolderContents(folder.id)">{{ folder.name }}</span>
-          <button class="btn-danger" (click)="deleteFolder(folder.id)">Delete</button>
-        </div>
-      </div>
-    </section>
+    <div class="tree-card">
+      <h3>Folder Tree</h3>
+      <ul class="tree-list">
+        <li *ngFor="let folder of folderTree">
+          <div class="tree-row">
+            <span class="tree-name" (click)="loadFolderContents(folder.id)">{{ folder.name }}</span>
 
-    <!-- Files Section -->
-    <section class="files-section">
-      <h2>Files</h2>
-      <div class="file-grid">
-        <div class="file-card" *ngFor="let file of files">
-          <span>{{ file.fileName }}</span>
-          <div class="file-actions">
-            <button class="btn-primary" (click)="downloadFile(file.id, file.fileName)">Download</button>
-            <button class="btn-danger" (click)="deleteFile(file.id)">Delete</button>
+            <button class="small-icon danger" (click)="deleteFolder(folder.id)">🗑️</button>
+
+            <select class="tree-move" (change)="onMoveFolder(folder.id, $event)">
+              <option value="">Move</option>
+              <option *ngFor="let target of folderTree"
+                      [value]="target.id"
+                      [disabled]="target.id === folder.id">
+                {{ target.name }}
+              </option>
+            </select>
           </div>
-        </div>
-      </div>
-    </section>
+        </li>
+      </ul>
+    </div>
 
-    <!-- Upload File Section -->
-    <section class="upload-section">
-      <h2>Upload File</h2>
-      <input type="file" (change)="selectFile($event)">
-      <input type="text" placeholder="Phone Number" [(ngModel)]="userPhoneNumber">
-      <input type="text" placeholder="Notes" [(ngModel)]="notes">
-      <button class="btn-primary" (click)="uploadFile()">Upload</button>
-    </section>
+  </aside>
 
-  </main>
 </div>

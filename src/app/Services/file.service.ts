@@ -1,81 +1,60 @@
-import { Injectable } from "@angular/core";
-import { environment } from "./environment";
-import { HttpClient, HttpHeaders, HttpParams } from "@angular/common/http";
-import { AuthService } from "./auth.service";
-import { Observable } from "rxjs";
-import { FileItem } from "./models/models";
-
+import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { FileItem } from './models/models';
+import { environment } from './environment';
 @Injectable({
   providedIn: 'root'
 })
 export class FileService {
+ private base = `${environment.apiUrl}/api/file-management`
 
-  private base = `${environment.apiUrl}/api/file-management`;
+  constructor(private http: HttpClient) {}
 
-  constructor(private http: HttpClient, 
-    private auth: AuthService
-  ){}
+  // Upload a file
+  uploadFile(file: File, folderId: number | null, notes: string): Observable<any> {
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('folderId', folderId?.toString() ?? '');
+    formData.append('notes', notes);
 
-  // Upload File:
-  uploadFile(file: File, folderId?: number | null, notes?: string): Observable<FileItem> {
-   
-    const form = new FormData();
-    form.append('File', file);
-    form.append('FolderId', folderId == null ? '' : String(folderId));
-    if (notes != null && notes.trim().length > 0) form.append('Notes', notes.trim());
-    const token = this.auth.getAcessToken();
-    const headers = token ? new HttpHeaders({ 'Authorization': `Bearer ${token}` }) : undefined;
-    return this.http.post<FileItem>(`${this.base}/add`, form, { headers });
+    return this.http.post(`${this.base}/add`, formData);
   }
 
-  // Update File
-  updateFileInfo(
-    fileId: number,
-    folderId?: number | null,
-    phoneNumber?: string,
-    notes?: string,
-    isPrivate?: boolean
-  ): Observable<FileItem> {
-    const payload: any = {};
-    if (folderId !== undefined) payload.folderId = folderId;
-    if (phoneNumber !== undefined) payload.phoneNumber = phoneNumber;
-    if (notes !== undefined) payload.notes = notes;
-    if (isPrivate !== undefined) payload.isPrivate = isPrivate;
+  //Update full file (PUT)
+ updateFile(fileId: number, file: File) { 
+  const formData = new FormData(); formData.append('file', file); 
+  return this.http.put(`${this.base}/update/${fileId}`, formData); 
+ }
 
-    const token = this.auth.getAcessToken();
-    const headers = token ? new HttpHeaders({ 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' }) : new HttpHeaders({ 'Content-Type': 'application/json' });
+  //Update file info (PATCH)
+ updateFileInfo(
+  fileId: number,
+  folderId: number | null,
+  phoneNumber: string,
+  notes: string,
+  isPrivate: boolean
+) {
+  const body = {
+    folderId,
+    phoneNumber,
+    notes,
+    isPrivate
+  };
 
-    return this.http.patch<FileItem>(`${this.base}/update-info/${fileId}`, payload, { headers });
-  }
-
-  // Download File
-  downloadFile(fileId: number): Observable<Blob> {
-    const token = this.auth.getAcessToken();
-    const headers = token ? new HttpHeaders({ 'Authorization': `Bearer ${token}` }) : undefined;
-    return this.http.get(`${this.base}/download/${fileId}`, { headers, responseType: 'blob' });
-  }
-
-  // Delete File
-  deleteFile(fileId: number, notes?: string): Observable<{ message: string }> {
-    const token = this.auth.getAcessToken();
-    const headers = token ? new HttpHeaders({ 'Authorization': `Bearer ${token}` }) : undefined;
-
-    const params = notes ? new HttpParams().set('notes', notes) : undefined;
-    return this.http.delete<{ message: string }>(`${this.base}/${fileId}`, { headers, params });
-  }
-
-  // Stream File
-  streamFile(fileId: number): Observable<Blob> {
-    const token = this.auth.getAcessToken();
-    const headers = token ? new HttpHeaders({ 'Authorization': `Bearer ${token}` }) : undefined;
-    return this.http.get(`${this.base}/stream/${fileId}`, { headers, responseType: 'blob' });
-  }
-
-  // Presigned URL
-  getPresignedUrl(fileId: number): Observable<{ url: string }> {
-    const token = this.auth.getAcessToken();
-    const headers = token ? new HttpHeaders({ 'Authorization': `Bearer ${token}` }) : undefined;
-    return this.http.get<{ url: string }>(`${this.base}/presigned-url/${fileId}`, { headers });
-  }
+  return this.http.patch(`${this.base}/update-info/${fileId}`, body);
 }
+
+
+  //Download file
+  downloadFile(fileId: number): Observable<Blob> {
+    return this.http.get(`${this.base}/download/${fileId}`, { responseType: 'blob' });
+  }
+
+  //Delete file
+  deleteFile(fileId: number): Observable<any> {
+    return this.http.delete(`${this.base}/${fileId}`);
+  }
+
  
+}

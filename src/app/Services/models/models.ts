@@ -2,7 +2,7 @@ export interface FileItem {
     id: number;
 
     fileName: string;
-
+     
     contentType: string;
 
     fileSize: number;
@@ -26,6 +26,7 @@ export interface FileItem {
     updateOn?: string;
 
     notes?: string | null;
+    showEdit?: boolean;
 }
 
 export interface FolderModel {
@@ -62,4 +63,17 @@ export interface TwoFactorAuthentication{
 
    masterpin: string;
    
+}
+
+export interface Favorites{
+  
+  id: number;
+  fileId: number;
+  folderId: number;
+  itemName:string;
+  itemType:string;
+  contentType:string;
+  size: number;
+  addedOn: string;
+
 }

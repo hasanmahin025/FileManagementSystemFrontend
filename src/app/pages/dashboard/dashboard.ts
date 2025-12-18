@@ -1,169 +1,201 @@
 import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { FileService } from '../../Services/file.service';
+import { FolderService } from '../../Services/Folder.services';
+import { FileItem, FolderModel } from '../../Services/models/models';
 import { FormsModule } from '@angular/forms';
-import { FolderService } from '../../Services/Folder.services'; 
-import { FileService } from '../../Services/file.service';    
-import { FolderModel , FileItem } from '../../Services/models/models'; 
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-dashboard',
-  standalone: true,
-  imports: [CommonModule, FormsModule],
   templateUrl: './dashboard.html',
-  styleUrls: ['./dashboard.css']
+  styleUrls: ['./dashboard.css'],
+  standalone: true,
+  imports: [FormsModule, CommonModule]
 })
 export class DashboardComponent implements OnInit {
 
   folders: FolderModel[] = [];
   files: FileItem[] = [];
   folderTree: FolderModel[] = [];
-  currentFolderId: number | null = null;
-  breadcrumbs: FolderModel[] = [];
-  isLoading: boolean = false;
 
-  newFolderName: string = '';
-  newFolderDesc: string = '';
+  currentFolderId: number | null = null;
+  showUploadPanel = false;
+
+  // Folder creation
+  newFolderName = '';
+  newFolderDescription = '';
+
+  // File upload
   selectedFile: File | null = null;
-  uploadNotes: string = '';
+  notes = '';
+
+  // File update
+  editNotes = '';
+  editPhoneNumber = '';
+  editIsPrivate = false;
 
   constructor(
-    private folderService: FolderService,
-    private fileService: FileService
-  ){}
+    private fileService: FileService,
+    private folderService: FolderService
+  ) {}
 
-  ngOnInit(): void {
-    this.loadContent();
+  ngOnInit() {
+    this.loadRootFolders();
     this.loadFolderTree();
   }
 
-  // Load folders & files for current folder
-  loadContent(): void {
-    this.isLoading = true;
+  // -------------------------------------------------
+  // FOLDER METHODS
+  // -------------------------------------------------
 
-    if(this.currentFolderId === null) {
-      this.folderService.getRootFolders().subscribe({
-        next: res => {
-          console.log('Root folders:', res);
-          this.folders = Array.isArray(res) ? res : [];
-          this.files = [];
-          this.isLoading = false;
-        },
-        error: err => this.handleError('Load root folders failed', err)
-      });
-    } else {
-      this.folderService.getFolderContents(this.currentFolderId).subscribe({
-        next: res => {
-          console.log('Folder contents:', res);
-          this.folders = Array.isArray(res.folders) ? res.folders : [];
-          this.files = Array.isArray(res.files) ? res.files : [];
-          this.isLoading = false;
-        },
-        error: err => this.handleError('Load folder content failed', err)
-      });
-    }
-  }
+  loadRootFolders() {
+    this.folderService.getRootFolders().subscribe(res => {
+      this.folders = res.subFolders ?? [];
+      this.currentFolderId = null;
 
-  // Load folder tree for sidebar
-  loadFolderTree(): void {
-    this.folderService.getFolderTree().subscribe({
-      next: res => this.folderTree = Array.isArray(res) ? res : [],
-      error: err => this.handleError('Tree load failed', err)
+      //Add showEdit dynamically
+      this.files = (res.files ?? []).map((f: any) => ({
+        ...f,
+        showEdit: false
+      }));
     });
   }
 
-  // Open folder
-  openFolder(folder: FolderModel): void {
-    this.breadcrumbs.push(folder);
-    this.currentFolderId = folder.id;
-    this.loadContent();
-  }
+  loadFolderContents(folderId: number) {
+    this.currentFolderId = folderId;
 
-  // Navigate up
-  navigateUp(): void {
-    if(this.breadcrumbs.length === 0) return;
-    this.breadcrumbs.pop();
-    const prev = this.breadcrumbs[this.breadcrumbs.length - 1];
-    this.currentFolderId = prev ? prev.id : null;
-    this.loadContent();
-  }
+    this.folderService.getFolderContents(folderId).subscribe(res => {
+      this.folders = res.subFolders;
 
-  // Navigate to root
-  navigateToRoot(): void {
-    this.breadcrumbs = [];
-    this.currentFolderId = null;
-    this.loadContent();
-  }
-
-  // Create new folder
-  createFolder(): void {
-    if(!this.newFolderName.trim()) {
-      alert('Folder Name is required!');
-      return;
-    }
-    this.isLoading = true;
-    this.folderService.createFolder(this.newFolderName, this.newFolderDesc, this.currentFolderId)
-      .subscribe({
-        next: res => {
-          this.newFolderName = '';
-          this.newFolderDesc = '';
-          this.isLoading = false;
-
-          if(res) this.folders.push(res); // Push new folder to list
-          this.loadFolderTree();          // refresh sidebar
-        },
-        error: err => this.handleError('Create folder failed', err)
-      });
-  }
-
-  // Delete folder
-  deleteFolder(folderId: number): void {
-    if(!confirm('Are you sure? This will delete the folder and ALL its contents!')) return;
-    this.folderService.deleteFolder(folderId, true).subscribe({
-      next: () => this.loadContent(),
-      error: err => this.handleError('Delete folder failed', err)
+      //Add showEdit dynamically
+      this.files = res.files.map((f: any) => ({
+        ...f,
+        showEdit: false
+      }));
     });
   }
 
-  // File select
-  onFileSelect(event: any): void {
-    const file = event.target.files?.[0];
-    if(file) this.selectedFile = file;
+  loadFolderTree() {
+    this.folderService.getFolderTree().subscribe(res => {
+      this.folderTree = res;
+    });
   }
 
-  // Upload file
-  uploadFile(): void {
-    if(!this.selectedFile) {
-      alert('Please select a file');
-      return;
-    }
-    this.isLoading = true;
-    this.fileService.uploadFile(this.selectedFile, this.currentFolderId, this.uploadNotes).subscribe({
+  createFolder() {
+    if (!this.newFolderName.trim()) return;
+
+    const parentId = this.currentFolderId ?? null;
+
+    this.folderService.createFolder(
+      this.newFolderName,
+      this.newFolderDescription,
+      parentId
+    ).subscribe(() => {
+      this.newFolderName = '';
+      this.newFolderDescription = '';
+      this.loadFolderContents(this.currentFolderId ?? 0);
+      this.loadFolderTree();
+      alert("Folder Create Sucessfully")
+    });
+  }
+
+  deleteFolder(folderId: number) {
+    if (!confirm('Are you sure you want to delete this folder?')) return;
+
+    this.folderService.deleteFolder(folderId).subscribe(() => {
+      this.loadFolderContents(this.currentFolderId ?? 0);
+      this.loadFolderTree();
+    });
+  }
+
+  moveFolder(folderId: number, newParentId: number | null) {
+    this.folderService.moveFolder(folderId, newParentId).subscribe(() => {
+      this.loadFolderContents(this.currentFolderId ?? 0);
+      this.loadFolderTree();
+    });
+  }
+
+  // -------------------------------------------------
+  // FILE METHODS
+  // -------------------------------------------------
+
+  selectFile(event: any) {
+    this.selectedFile = event.target.files[0];
+  }
+
+  uploadFile() {
+    if (!this.selectedFile) return;
+
+    this.fileService.uploadFile(
+      this.selectedFile,
+      this.currentFolderId,
+      this.notes
+    ).subscribe({
       next: () => {
-        alert('File uploaded successfully');
         this.selectedFile = null;
-        this.uploadNotes = '';
-        const input = document.getElementById('fileInput') as HTMLInputElement;
-        if(input) input.value = '';
-        this.loadContent();
+        this.notes = '';
+        this.loadFolderContents(this.currentFolderId ?? 0);
+        alert("File Upload SuccessFully")
       },
-      error: err => this.handleError('Upload failed', err)
+      error: err => {
+        alert('File upload failed: ' + (err.error?.title || err.message));
+      }
     });
   }
 
-  // Delete file
-  deleteFile(fileId: number): void {
-    if(!confirm('Delete this file?')) return;
+  downloadFile(fileId: number, fileName: string) {
+    this.fileService.downloadFile(fileId).subscribe(blob => {
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = fileName;
+      a.click();
+      window.URL.revokeObjectURL(url);
+    });
+  }
+
+  deleteFile(fileId: number) {
+    if (!confirm('Are you sure you want to delete this file?')) return;
+
     this.fileService.deleteFile(fileId).subscribe({
-      next: () => this.loadContent(),
-      error: err => this.handleError('Delete file failed', err)
+      next: () => this.loadFolderContents(this.currentFolderId ?? 0),
+      error: err => alert('File deletion failed: ' + (err.error?.title || err.message))
     });
   }
 
-  private handleError(msg: string, err: any): void {
-    this.isLoading = false;
-    console.error(msg, err);
-    const serverMsg = err.error?.message || err.message || 'Unknown error';
-    alert(`${msg}: ${serverMsg}`);
+  // -------------------------------------------------
+  // EXTRA FILE FEATURES
+  // -------------------------------------------------
+
+  updateFileInfo(fileId: number) {
+    this.fileService.updateFileInfo(
+      fileId,
+      this.currentFolderId,
+      this.editPhoneNumber,
+      this.editNotes,
+      this.editIsPrivate
+    ).subscribe({
+      next: () => {
+        this.loadFolderContents(this.currentFolderId ?? 0);
+        alert('File updated successfully');
+      },
+      error: err => alert('Update failed: ' + (err.error?.title || err.message))
+    });
   }
 
+  toggleFavorite(fileId: number) {
+    console.log("Favorite clicked for file:", fileId);
+    // You will implement FavoriteService here later
+  }
+
+  onMoveFolder(folderId: number, event: Event) {
+    const select = event.target as HTMLSelectElement;
+    const value = select.value;
+    const newParentId = value ? Number(value) : null;
+    this.moveFolder(folderId, newParentId);
+  }
+
+  toggleUploadPanel() {
+    this.showUploadPanel = !this.showUploadPanel;
+  }
 }

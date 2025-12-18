@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { FolderModel } from './models/models';
+import { FileItem, FolderModel } from './models/models';
 import { environment } from './environment';
 
 @Injectable({
@@ -58,9 +58,20 @@ export class FolderService {
   getFolderContents(folderId: number): Observable<any> {
     return this.http.get<any>(`${this.base}/${folderId}/contents`)
   }
-  getRootFolders(): Observable<FolderModel[]> {
-    return this.http.get<FolderModel[]>(`${this.base}/root`)
-  }
+  getRootFolders(): Observable<{
+  folder: any,
+  subFolders: FolderModel[],
+  files: FileItem[],
+  breadcrumbs: any[]
+}> {
+  return this.http.get<{
+    folder: any,
+    subFolders: FolderModel[],
+    files: FileItem[],
+    breadcrumbs: any[]
+  }>(`${this.base}/root`);
+}
+
 
   getFolderTree(): Observable<FolderModel[]> {
     return this.http.get<FolderModel[]>(`${this.base}/tree`)
