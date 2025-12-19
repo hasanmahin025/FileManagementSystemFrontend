@@ -12,7 +12,7 @@ import { Favorites } from "./models/models";
 export class FavoritesServices{
 
     constructor(private http: HttpClient){}
-    private base = `${environment}/api/favorites`
+    private base = `${environment.apiUrl}/api/favorites`
      
     getFavorite(): Observable<Favorites[]>{
 

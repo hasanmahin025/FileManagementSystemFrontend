@@ -6,7 +6,7 @@
 body {
   margin: 0;
   font-family: "Segoe UI", sans-serif;
-  background: #f9fafb;
+  background: #ffffff;
 }
 
 /* Layout shell */
@@ -16,52 +16,64 @@ body {
   height: 100vh;
   overflow: hidden;
 }
-
-/* Sidebar */
+/* Sidebar container */
 .nav-sidebar {
-  background: #111827;
-  color: #e5e7eb;
-  padding: 20px;
+  background-color: #000000; 
+  padding: 32px 20px; /* Increased top padding for better logo placement */
   display: flex;
   flex-direction: column;
+  border-right: 1px solid #e5e7eb;
+  height: 100vh;
 }
 
+/* Logo */
 .logo {
-  font-size: 20px;
-  font-weight: 600px;
-  margin-bottom: 24px;
+  font-size: 22px;
+  font-weight: 500;
+  color: #ffffff;
+  margin-bottom: 100px; /* Big gap between logo and first item */
+  padding-left: 10px;
 }
 
-.nav-item {
-  background: transparent;
-  border: none;
-  color: inherit;
-  padding: 10px 12px;
-  border-radius: 6px;
-  cursor: pointer;
-  font-size: 14px;
-  transition: background 0.2s ease;
+/* Navigation list */
+.nav-list {
+  display: flex;
+  flex-direction: column;
+  gap: 50px; /* This controls the actual gap between the button boxes */
+  width: 100%;
 }
 
-.nav-item:hover,
-.nav-item.active {
-  background: #1f2937;
-}
-
+/* Navigation item */
 .nav-item {
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 10px 12px;
-  font-size: 14px;
-  line-height: 1.4;
+  gap: 15px;
+  padding: 14px 18px; /* Increased padding inside the button */
+  font-size: 15px;
+  font-weight: 600;
+  color: #ffffff;
+  text-decoration: none;
+  border-radius: 12px; /* Using rounded corners makes the spacing look better */
+  transition: all 0.2s ease-in-out;
+  width: 100%;
+  cursor: pointer;
 }
 
+/* Hover and active states */
+.nav-item:hover,
+.nav-item.active {
+  background-color: #ffffff; 
+  color: #000000 !important;
+  transform: translateX(4px);
+  border: none !important; /* Subtle shift to make it feel more spaced out */
+}
+
+/* Icon style */
 .nav-item span {
-  display: inline-block;
-  font-size: 18px;
-  width: 24px;
-  text-align: center;
+  font-size: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 /* Main panel */
@@ -83,7 +95,7 @@ body {
 
 .main-header p {
   margin: 4px 0 0;
-  color: #6b7280;
+  color: #000000;
   font-size: 14px;
 }
 
@@ -132,7 +144,7 @@ body {
 }
 
 .stat-card {
-  background: white;
+  background: rgb(236, 236, 236);
   border-radius: 12px;
   padding: 16px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
@@ -184,7 +196,7 @@ body {
 }
 
 .create-card {
-  background: linear-gradient(to bottom right, #d1fae5, #a7f3d0);
+  background: linear-gradient(to bottom right, #000000, #ffffff);
 }
 
 /* Upload panel */
@@ -234,7 +246,7 @@ body {
 
 /* Right panel */
 .right-panel {
-  background: #f3f4f6;
+  background: #000000;
   padding: 20px;
   overflow-y: auto;
   border-left: 1px solid #e5e7eb;
@@ -242,18 +254,18 @@ body {
 
 .storage-card,
 .tree-card {
-  background: white;
+  background: rgb(255, 255, 255);
   border-radius: 12px;
   padding: 16px;
   margin-bottom: 20px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 1px 3px rgb(0, 0, 0);
 }
 
 .storage-circle {
   width: 100px;
   height: 100px;
   border-radius: 999px;
-  border: 6px solid #2563eb;
+  border: 6px solid #000000;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -268,7 +280,7 @@ body {
 
 .storage-label {
   font-size: 12px;
-  color: #6b7280;
+  color: #020202;
 }
 
 /* Folder tree */

@@ -4,13 +4,14 @@ import { FolderService } from '../../Services/Folder.services';
 import { FileItem, FolderModel } from '../../Services/models/models';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.html',
   styleUrls: ['./dashboard.css'],
   standalone: true,
-  imports: [FormsModule, CommonModule]
+  imports: [FormsModule, CommonModule , RouterLink]
 })
 export class DashboardComponent implements OnInit {
 

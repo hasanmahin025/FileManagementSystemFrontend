@@ -77,3 +77,65 @@ export interface Favorites{
   addedOn: string;
 
 }
+
+export enum permissions{
+  Read = 1,
+  Write = 2 , 
+  Owner = 3
+}
+
+export interface Sharing{
+  fileId: number
+  sharedWithUserId: number
+  permission: permissions
+  sharedOn:string
+  sharedWithUserName:string
+  id: number
+  email: string
+  folderId:number
+  userName:string
+  role:string
+
+ 
+}
+
+export interface TrashManagement{
+  fileId: number
+  folderId: number
+
+}
+
+export interface Storage{
+  message: string
+}
+
+export interface SearchFileAndFolder{
+  Query: string
+  PhoneNumber:string
+  FolderId: number
+  UserId: number
+  IncludeFiles: boolean
+  IncludeFolders: boolean
+  ContentType: string
+  FromDate?:string
+  toDate?:string
+  PageNumber: number
+  PageSize: number
+  SortBy:string
+  SortAscending:string
+  Page: number
+  ParentFolderId: number
+}
+
+export interface Admin{
+  userName:string
+  email:string
+  password:string
+  userId:number
+  PageNumber:number
+  PageSize:number
+  SearchTerm:string
+  SortBy:string
+  SortAscending:boolean
+
+}
