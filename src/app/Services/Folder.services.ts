@@ -1,85 +1,111 @@
-import { Injectable, inject } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
-import { FileItem, FolderModel } from './models/models';
-import { environment } from './environment';
+import { HttpClient, HttpParams } from "@angular/common/http";
+import { Injectable } from "@angular/core";
+import { environment } from "./environment";
+import { FileItem, FolderModel } from "./models/models";
+import { firstValueFrom } from "rxjs";
 
 @Injectable({
   providedIn: 'root'
 })
+
 export class FolderService {
 
-  private http = inject(HttpClient);
+  constructor(private http: HttpClient) { }
+
   private base = `${environment.apiUrl}/api/folders`
 
-  //cretae folder
-  createFolder(name: string, description?: string, parentFolderId: number | null = null): Observable<FolderModel> {
-    const payload: any = {
-      name: name,
-      description: description && description.trim().length > 0 ? description : null,
-      parentFolderId: parentFolderId
+  async createFolder(name: string, description?: string, parentFolderId: number | null = null): Promise<FolderModel> {
+    const payload = {
+      name,
+      description: description?.trim() ? description.trim() : null
+      ,
+      parentFolderId
+
     };
-
-    console.log('Folder payload:', payload);
-
-    return this.http.post<FolderModel>(`${this.base}`, payload);
+    return  firstValueFrom(
+      this.http.post<FolderModel>(`${this.base}`, payload)
+    )
   }
 
+  async getFolders(parentFolderId?: number | null): Promise<FolderModel[]> {
 
-  //Get user's folders
-  getFolders(parentFolderId?: number | null): Observable<FolderModel[]> {
-    const params: any = {};
-    if (parentFolderId !== undefined) params.parentFolderId = parentFolderId;
-
-    return this.http.get<FolderModel[]>(`${this.base}`, { params });
-  }
-
-  //Get folder by ID
-  getFolderById(folderId: number): Observable<FolderModel> {
-    return this.http.get<FolderModel>(`${this.base}/${folderId}`);
-  }
-
-  //Update folder (rename or update description)
-  updateFolder(folderId: number, name: string, description?: string): Observable<FolderModel> {
-    const payload: any = { name };
-    if (description) payload.description = description;
-
-    return this.http.put<FolderModel>(`${this.base}/${folderId}`, payload);
-  }
-
-  deleteFolder(folderId: number, recursive: boolean = false): Observable<{ message: string }> {
-
-    const params = { recursive: recursive.toString() }
-
-    return this.http.delete<{ message: string }>(`${this.base}/${folderId}`, { params })
+    let params = new HttpParams();
+    if (parentFolderId != null) {
+      params = params.set('parentFolderId', String(parentFolderId))
+    }
+    return  firstValueFrom(
+      this.http.get<FolderModel[]>(this.base, { params })
+    )
 
   }
 
-  getFolderContents(folderId: number): Observable<any> {
-    return this.http.get<any>(`${this.base}/${folderId}/contents`)
-  }
-  getRootFolders(): Observable<{
-  folder: any,
-  subFolders: FolderModel[],
-  files: FileItem[],
-  breadcrumbs: any[]
-}> {
-  return this.http.get<{
-    folder: any,
-    subFolders: FolderModel[],
-    files: FileItem[],
-    breadcrumbs: any[]
-  }>(`${this.base}/root`);
-}
-
-
-  getFolderTree(): Observable<FolderModel[]> {
-    return this.http.get<FolderModel[]>(`${this.base}/tree`)
+  async getFolderById(folderId: number): Promise<FolderModel> {
+    return  firstValueFrom(
+      this.http.get<FolderModel>(`${this.base}/${folderId}`)
+    )
   }
 
-  moveFolder(folderId: number, newParentFolderId?: number | null): Observable<FolderModel> {
-
-    const payload: any = { newParentFolderId: newParentFolderId ?? null }
-    return this.http.put<FolderModel>(`${this.base}/${folderId}/move`, payload);
+  async updateFolder(folderId: number, data: { name?: string | null, description?: string | null }): Promise<FolderModel> {
+    const payload: Partial<{ name: string; description: string | null }> = {
+      
+    }
+    if (data.name?.trim()) {
+      payload.name = data.name.trim()
+    }
+    if (data.description?.trim()) {
+      payload.description = data.description.trim()
+    }
+    if (Object.keys(payload).length === 0) {
+      throw new Error('Nothing to Update')
+    }
+    return  firstValueFrom(this.http.put<FolderModel>(`${this.base}/${folderId}`, payload)
+    )
   }
+
+  async deleteFolder(folderId: number, recursive: boolean = false): Promise<{ message: string }> {
+    const params = new HttpParams().set('recursive', recursive.toString())
+
+    return  firstValueFrom(
+      this.http.delete<{ message: string }>(`${this.base}/${folderId}`, { params })
+    )
+
+  }
+
+  async getFolderContent(folderId: number): Promise<{ subFolders: FolderModel[]; files: FileItem[]; breadcrumbs: { id: number; name: string }[]; }> {
+
+    return  firstValueFrom(
+      this.http.get<{ subFolders: FolderModel[]; files: FileItem[]; breadcrumbs: { id: number; name: string }[]; }>(`${this.base}/${folderId}/contents`)
+    )
+
+  }
+
+  async getRootFolders(): Promise<{ folder: FolderModel;subFolders: FolderModel[];files: FileItem[]; breadcrumbs: { id: number; name: string }[]; }> {
+    return firstValueFrom(
+      this.http.get<{
+        folder: FolderModel;
+        subFolders: FolderModel[];
+        files: FileItem[];
+        breadcrumbs: { id: number; name: string }[];
+      }>(`${this.base}/root`)
+    );
+  }
+
+  async getFolderTree(): Promise<FolderModel[]> {
+    return  firstValueFrom(
+      this.http.get<FolderModel[]>(`${this.base}/tree`)
+    )
+
+  }
+
+  async moveFolder(folderId: number, newParentFolderId: number): Promise<FolderModel> {
+
+    const payload = { newParentFolderId }
+
+    return  firstValueFrom(
+      this.http.put<FolderModel>(`${this.base}/${folderId}/move`, payload)
+    )
+
+  }
+
+
 }

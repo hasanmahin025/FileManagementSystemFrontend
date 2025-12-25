@@ -26,26 +26,30 @@ export interface FileItem {
     updateOn?: string;
 
     notes?: string | null;
+
     showEdit?: boolean;
+
+    isFavourite?:boolean
+    favoriteId?: number | null;
 }
 
 export interface FolderModel {
   id: number;
   name: string;
 
-  description?: string | null;
-
-  parentFolderId?: number | null;
-  parentFolderName?: string | null;
-
+  description?: string;
+  favoriteId?: number;
+  parentFolderId?: number;
+  parentFolderName?: string;
+  recursive: boolean;
   ownerId?: number;
-  ownerName?: string;
+  ownerName?: String;
   createdOn?: string;   
   updatedOn?: string; 
-
+  newParentFolderId: number;
   subFolderCount?: number;
   fileCount?: number;
-
+   isFavourite?:boolean
   children?: FolderModel[];
 }
 

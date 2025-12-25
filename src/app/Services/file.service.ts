@@ -1,60 +1,78 @@
-import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
-import { FileItem } from './models/models';
-import { environment } from './environment';
+import { HttpClient, HttpParams } from "@angular/common/http";
+import { Injectable } from "@angular/core";
+import { environment } from "./environment";
+import { firstValueFrom, Observable } from "rxjs";
+import { FileItem } from "./models/models";
+
 @Injectable({
   providedIn: 'root'
 })
-export class FileService {
- private base = `${environment.apiUrl}/api/file-management`
 
-  constructor(private http: HttpClient) {}
+export class FileServices {
+  constructor(private http: HttpClient) { }
 
-  // Upload a file
-  uploadFile(file: File, folderId: number | null, notes: string): Observable<any> {
-    const formData = new FormData();
-    formData.append('file', file);
-    formData.append('folderId', folderId?.toString() ?? '');
-    formData.append('notes', notes);
+  private base = `${environment.apiUrl}/api/file-management`
 
-    return this.http.post(`${this.base}/add`, formData);
+  uploadFile(file: File, folderId: number, notes?: string): Observable<FileItem> {
+    const form = new FormData();
+    form.append('File', file);
+    form.append('FolderId', String(folderId));
+    if (notes?.trim()) {
+      form.append('Notes', notes.trim())
+    }
+    return this.http.post<FileItem>(`${this.base}/add`, form)
   }
 
-  //Update full file (PUT)
- updateFile(fileId: number, file: File) { 
-  const formData = new FormData(); formData.append('file', file); 
-  return this.http.put(`${this.base}/update/${fileId}`, formData); 
- }
+  updateFile(fileId: number, file: File, folderId?: number, notes?: string): Observable<FileItem> {
+    const form = new FormData();
+    form.append('File', file);
+    if (folderId !== undefined) {
+      form.append('FolderId', String(folderId));
+    }
+    if (notes?.trim()) {
+      form.append('Notes', notes.trim());
+    }
 
-  //Update file info (PATCH)
- updateFileInfo(
-  fileId: number,
-  folderId: number | null,
-  phoneNumber: string,
-  notes: string,
-  isPrivate: boolean
-) {
-  const body = {
-    folderId,
-    phoneNumber,
-    notes,
-    isPrivate
-  };
+    return this.http.put<FileItem>(`${this.base}/update/${fileId}`, form)
 
-  return this.http.patch(`${this.base}/update-info/${fileId}`, body);
-}
-
-
-  //Download file
-  downloadFile(fileId: number): Observable<Blob> {
-    return this.http.get(`${this.base}/download/${fileId}`, { responseType: 'blob' });
   }
 
-  //Delete file
-  deleteFile(fileId: number): Observable<any> {
-    return this.http.delete(`${this.base}/${fileId}`);
+  updateFileInfo(fileId: number, get: { folderId?: number, phoneNumber?: string, notes?: string, isPrivate?: boolean }): Observable<FileItem> {
+
+    const payload: Partial<{ folderId: number, notes: string, phoneNumber: string, isPrivate: boolean }> = {}
+    if (typeof get.folderId === 'number'){ 
+        payload.folderId = get.folderId; 
+      }
+    if (get.phoneNumber?.trim()) {
+      payload.phoneNumber = get.phoneNumber.trim();
+    }
+    if (get.notes?.trim()) {
+      payload.notes = get.notes.trim();
+    }
+    if (typeof get.isPrivate === 'boolean') {
+      payload.isPrivate = get.isPrivate
+    }
+    return this.http.patch<FileItem>(`${this.base}/update-info/${fileId}`, payload)
+
   }
 
- 
+  downloadFile(fileId: number): Observable<Blob>{
+    return this.http.get(`${this.base}/download/${fileId}`,{responseType: 'blob'})
+  }
+
+  async deleteFiles(fileId: number , notes?: string): Promise<FileItem>{
+     
+    let params = new HttpParams();
+    if(notes?.trim()){
+      params = params.set('notes' , notes.trim())
+    }
+
+    return firstValueFrom(
+      this.http.delete<FileItem>(`${this.base}/${fileId}`,{params})
+    )
+
+  }
+
+
+
 }

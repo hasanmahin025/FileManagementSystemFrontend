@@ -1,173 +1,143 @@
-<!-- Floating Upload Button -->
-<button class="fab" (click)="toggleUploadPanel()">⬆️</button>
-
-<div class="app-shell">
-
-  <!-- Sidebar -->
-  <aside class="nav-sidebar">
-    <div class="logo">☁️ <span>File Manager</span></div>
-    <nav>
-      <a routerLink = "/dashboard" routerLinkActive = "active" class="nav-item" ><span>🏠</span> Dashboard</a>
-      <a routerLink = "/shared" class="nav-item"><span>👥</span> Shared</a>
-      <a routerLink = "/favourite" class="nav-item"><span>⭐</span>Favorites</a>
-      <a routerLink = "/trash" class="nav-item"><span>🗑️</span> Trash</a>
-    </nav>
-  </aside>
-
-  <!-- Main Panel -->
-  <main class="main-panel">
-    <header class="main-header">
-      <div>
-        <h1>My Cloud</h1>
-        <p class="subtitle">Manage your folders and files in one place.</p>
-      </div>
-      <button class="primary-btn" (click)="loadRootFolders()">Root View</button>
+<div class="dashboard-container">
+    <!--Header-->
+    <header class="dashboard-header">
+        <div class="header-left">
+            <div class="logo">
+                <i class="fas fa-folder icon-large"></i>
+                <span class="logo-text">Drive</span>
+            </div>
+        </div>
+        <div class="header-center">
+            <div class="search-bar">
+                <i class="fas fa-search"></i>
+                <input type="text" placeholder="Search in Drive">
+            </div>
+        </div>
+        <div class="header-right">
+            <button class="icon-btn" title="View">
+                <i class="fas fa-cog"></i>
+            </button>
+            <div class="user-avatar">
+                <i class="fas fa-user-circle icon-large"></i>
+            </div>
+        </div>
     </header>
 
-    <!-- Stats -->
-    <section class="stats-row">
-      <div class="stat-card images">🖼️ Images<br><span>146 files</span></div>
-      <div class="stat-card docs">📄 Documents<br><span>35 files</span></div>
-      <div class="stat-card music">🎵 Music<br><span>771 tracks</span></div>
-    </section>
+    <!--Main Cintent-->
+    <div class="main-content">
+        <!--Sidebar-->
+        <aside class="sidebar">
+            <button class="new-btn">
+                <i class="fas fa-plus-circle icon-medium"></i>
+                <span>New</span>
+            </button>
+            <nav class="sidebar-nav">
+                <a class="nav-item active">
+                    <i class="fas fa-hdd"></i>
+                    <span>My Drive</span>
+                </a>
+                <a class="nav-item">
+                    <i class="fas fa-user-friends"></i>
+                    <span>Shared with me</span>
+                </a>
+                <a class="nav-item">
+                    <i class="fas fa-user-plus"></i>
+                    <span>Shared by me</span>
+                </a>
+                <a class="nav-item">
+                    <i class="fas fa-clock"></i>
+                    <span>Recent</span>
+                </a>
+                <a class="nav-item">
+                    <i class="fas fa-star"></i>
+                    <span>Favourite</span>
+                </a>
+                <a class="nav-item">
+                    <i class="fas fa-trash"></i>
+                    <span>Trash</span>
 
-    <section class="content-row">
+                </a>
+                <a class="nav-item">
+                    <i class="fas fa-user-tie"></i>
+                    <span>Admin</span>
+                </a>
+            </nav>
 
-      <!-- Folders -->
-      <div class="content-left">
-        <h2>Folders</h2>
-
-        <div class="folder-card-grid">
-
-          <!-- Folder List -->
-          <div class="folder-card" *ngFor="let folder of folders">
-            <div class="folder-card-body">
-              <div class="folder-card-icon" (click)="loadFolderContents(folder.id)">📁</div>
-              <div class="folder-card-name">{{ folder.name }}</div>
-              <button class="small-btn danger" (click)="deleteFolder(folder.id)">Delete</button>
+            <div class="storage-info">
+                <div class="storage-bar">
+                    <div class="storage-used" style="width: 35%"></div>
+                </div>
+                <p class="storage-text">0.0 GB of 15 GB used</p>
+                <h4>Storage</h4>
             </div>
-          </div>
-
-          <!-- Create Folder -->
-          <div class="folder-card create-card">
-            <div class="folder-card-body">
-              <div class="folder-card-icon">➕</div>
-              <input type="text" placeholder="Folder name" [(ngModel)]="newFolderName">
-              <textarea placeholder="Description" [(ngModel)]="newFolderDescription"></textarea>
-              <button class="small-btn primary" (click)="createFolder()">Create</button>
+        </aside>
+        <!--Content-Area-->
+        <main class="content-area">
+            <div class="breadcrumb">
+                <button class="breadcrumb-item">
+                    <i class="fas fa-home"></i>
+                    <span>My Drive</span>
+                </button>
             </div>
-          </div>
+            <!--Toolbar-->
+            <div class="toolbar">
+                <div class="toolbar-left">
+                    <button class="bth-icon" title="New folder">
+                        <i class="fas fa-folder-plus" style="font-size:25px;"></i>
+                    </button>
+                    <button class="bth-icon" title="Upload files">
+                        <i class="fas fa-upload" style="font-size: 25px;"></i>
+                    </button>
+                </div>
 
-        </div>
+            </div>
+            <div class="section">
+                <h3 class="section-title">Folders</h3>
+                <div class="grid-view">
+                    <div class="grid-item folder-item">
+                        <div class="item-icon">
+                            <i class="fas fa-folder icon-large folder-color"></i>
+                        </div>
+                        <div class="item-content">
+                            <div class="item-name">Name</div>
+                            <div class="item-meta">00 items</div>
+                        </div>
+                        <div class="item-actions">
+                            <button class="btn-icon" title="Edit">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="btn-icon" title="Delete">
+                                <i class="fas fa-trash-alt"></i>
+                            </button>
+                        </div>
+                    </div>
+                     <div class="grid-item file-item">
+              <div class="item-icon">
+                <i class="fas fa-file-powerpoint icon-large ppt-color"></i>
+              </div>
+              <div class="item-content">
+                <div class="item-name">Presentation.pptx</div>
+                <div class="item-meta">
+                  <span>5.8 MB</span>
+                  <span class="separator">•</span>
+                  <span>Dec 18, 2024</span>
+                </div>
+              </div>
+              <div class="item-actions">
+                <button class="btn-icon" title="Download">
+                  <i class="fas fa-download"></i>
+                </button>
+                <button class="btn-icon" title="Edit">
+                  <i class="fas fa-edit"></i>
+                </button>
+                <button class="btn-icon" title="Delete">
+                  <i class="fas fa-trash-alt"></i>
+                </button>
+              </div>
+            </div>
 
-        <!-- Upload Panel -->
-        <div class="upload-panel" *ngIf="showUploadPanel">
-          <h2>Upload File</h2>
-          <input type="file" (change)="selectFile($event)">
-          <input type="text" placeholder="Notes" [(ngModel)]="notes">
-          <button class="primary-btn" (click)="uploadFile()">Upload</button>
-        </div>
-      </div>
-
-      <!-- Recent Files -->
-      <div class="content-right">
-        <h2>Recent Files</h2>
-
-        <table class="recent-table">
-          <thead>
-            <tr>
-              <th>File</th>
-              <th>Notes</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-
-          <tbody>
-
-            <!-- File Row + Edit Panel -->
-            <ng-container *ngFor="let file of files">
-
-              <!-- File Row -->
-              <tr>
-                <td>🖼️ {{ file.fileName }}</td>
-                <td>{{ file.notes }}</td>
-                <td>
-                  <button class="small-btn" (click)="downloadFile(file.id, file.fileName)">Download</button>
-                  <button class="small-btn danger" (click)="deleteFile(file.id)">Delete</button>
-                  <button class="small-btn" (click)="file.showEdit = !file.showEdit">Edit</button>
-                  <button class="small-btn" (click)="toggleFavorite(file.id)">⭐</button>
-                </td>
-              </tr>
-
-              <!-- Edit Panel -->
-              <tr *ngIf="file.showEdit">
-                <td colspan="3">
-                  <div class="edit-panel">
-
-                    <label>Phone Number</label>
-                    <input type="text" [(ngModel)]="editPhoneNumber">
-
-                    <label>Notes</label>
-                    <input type="text" [(ngModel)]="editNotes">
-
-                    <label>
-                      <input type="checkbox" [(ngModel)]="editIsPrivate">
-                      Private
-                    </label>
-
-                    <button class="primary-btn" (click)="updateFileInfo(file.id)">Save Changes</button>
-
-                  </div>
-                </td>
-              </tr>
-
-            </ng-container>
-
-            <!-- Empty State -->
-            <tr *ngIf="files.length === 0">
-              <td colspan="3" class="empty-row">No files found.</td>
-            </tr>
-
-          </tbody>
-        </table>
-      </div>
-
-    </section>
-  </main>
-
-  <!-- Right Panel -->
-  <aside class="right-panel">
-
-    <div class="storage-card">
-      <h3>Storage</h3>
-      <div class="storage-circle">
-        <span class="storage-used">15 GB</span>
-        <span class="storage-label">of 50 GB</span>
-      </div>
+                </div>
+            </div>
+        </main>
     </div>
-
-    <div class="tree-card">
-      <h3>Folder Tree</h3>
-      <ul class="tree-list">
-        <li *ngFor="let folder of folderTree">
-          <div class="tree-row">
-            <span class="tree-name" (click)="loadFolderContents(folder.id)">{{ folder.name }}</span>
-
-            <button class="small-icon danger" (click)="deleteFolder(folder.id)">🗑️</button>
-
-            <select class="tree-move" (change)="onMoveFolder(folder.id, $event)">
-              <option value="">Move</option>
-              <option *ngFor="let target of folderTree"
-                      [value]="target.id"
-                      [disabled]="target.id === folder.id">
-                {{ target.name }}
-              </option>
-            </select>
-          </div>
-        </li>
-      </ul>
-    </div>
-
-  </aside>
-
 </div>
