@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { Shared } from './shared';
+import { Drive } from './drive';
 
-describe('Shared', () => {
-  let component: Shared;
-  let fixture: ComponentFixture<Shared>;
+describe('Drive', () => {
+  let component: Drive;
+  let fixture: ComponentFixture<Drive>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [Shared]
+      imports: [Drive]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(Shared);
+    fixture = TestBed.createComponent(Drive);
     component = fixture.componentInstance;
     await fixture.whenStable();
   });

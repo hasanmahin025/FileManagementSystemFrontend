@@ -3,40 +3,69 @@ import { Home } from './pages/home/home';
 import { Welcome } from './pages/welcome/welcome';
 import { Login } from './pages/login/login';
 import { guestGuard } from './Services/guard';
-import { DashboardComponent } from './pages/dashboard/dashboard';
+
 import { Favourite } from './pages/favourite/favourite';
 import { Trash } from './pages/trash/trash';
-import { Shared } from './pages/shared/shared';
+import { Drive } from './pages/drive/drive';
+import { Layout } from './layout/layout';
+import { SharedByMe } from './pages/shared-by-me/shared-by-me';
+import { SharedWithMe } from './pages/shared-with-me/shared-with-me';
+import { Admin } from './pages/admin/admin';
 
 export const routes: Routes = [
-
-
-    { path: '', redirectTo: 'home', pathMatch: 'full' },
-
-
-    {
-        path: 'home', 
-        component: Home,
-      //  canActivate: [guestGuard]
-    },
 
 
     { path: 'login',
      component: Login,
     // canActivate:[guestGuard]
     },
+    {
+       path:'home',
+       component:Home
+    },
+    {
+      path: 'welcome',
+      component:Welcome
+    },
+    {
+      path: '',
+      component:Layout,
+      children:[
+        {
+          path:'my-drive',
+          component:Drive
+        },
+        {
+          path:'favourite',
+          component:Favourite
+        },
+        {
+          path:'shared-by-me',
+          component:SharedByMe
+        }
+        ,
+        {
+          path:'shared-with-me',
+          component:SharedWithMe
+        },
+        {
+          path:'trash',
+          component:Trash
+        },
+        {
+          path:'admin',
+          component:Admin
+        },
+        {
+        path: '',
+        redirectTo: 'my-drive',
+        pathMatch: 'full'
+       }
 
-    {path:'dashboard' , component:DashboardComponent},
-   
-    {
-      path: 'favourite' , component: Favourite
+
+      ]
     },
-    {
-      path: 'trash' , component:Trash
-    },
-    {
-      path: 'shared' , component: Shared
-    },
+    
 
     { path: '**', redirectTo: 'home' }
 ];

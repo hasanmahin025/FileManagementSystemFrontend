@@ -37,7 +37,7 @@ export class Login {
       this.authservice.login(this.loginForm.value).subscribe({
         next: () => {
           this.isSubmitting = false
-          this.router.navigate(['/dashboard'])
+          this.router.navigate(['/my-drive'])
         },
         error: (err) => {
           this.isSubmitting = false
