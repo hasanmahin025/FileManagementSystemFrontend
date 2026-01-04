@@ -1,77 +1,66 @@
 import { HttpClient, HttpParams } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { environment } from "./environment";
-import { firstValueFrom, Observable } from "rxjs";
-import { FileItem } from "./models/models";
+import { Observable } from "rxjs";
+import { FileResponse, FileUpdateInfoRequest } from "./models/models";
 
 @Injectable({
-  providedIn: 'root'
+    providedIn: 'root'
 })
+export class FileService{
+    constructor(private http: HttpClient){}
+    private base = `${environment.apiUrl}/file-management`;
 
-export class FileServices {
-  constructor(private http: HttpClient) { }
 
-  private base = `${environment.apiUrl}/api/file-management`
+    uploadFile(file : File , folderId?: number | null , notes?: string): Observable<FileResponse>{
+        const formData = new FormData();
 
-  uploadFile(file: File, folderId: number, notes?: string): Observable<FileItem> {
-    const form = new FormData();
-    form.append('File', file);
-    form.append('FolderId', String(folderId));
-    if (notes?.trim()) {
-      form.append('Notes', notes.trim())
+        formData.append('File' , file);
+        if(folderId !== undefined && folderId !== null){
+            formData.append('FolderId' , folderId.toString());
+        }
+        if(notes){
+            formData.append('Notes' , notes);
+        }
+        return this.http.post<FileResponse>(`${this.base}/add`,formData);
     }
-    return this.http.post<FileItem>(`${this.base}/add`, form)
-  }
+    updateFile(fileId: number , folderId?: number | null , notes?: string): Observable<FileResponse>{
+        const formData = new FormData();
+        if(folderId !== undefined && folderId !== null){
+            formData.append('FolderId', folderId.toString())
 
-  updateFile(fileId: number, file: File, folderId?: number, notes?: string): Observable<FileItem> {
-    const form = new FormData();
-    form.append('File', file);
-    if (folderId !== undefined) {
-      form.append('FolderId', String(folderId));
+        }
+        if(notes){
+            formData.append('Notes', notes);
+        }
+        return this.http.put<FileResponse>(`${this.base}/update/${fileId}`, formData);
     }
-    if (notes?.trim()) {
-      form.append('Notes', notes.trim());
+    updateFileInfo(fileId : number , request: FileUpdateInfoRequest):Observable<FileResponse>{
+        return this.http.patch<FileResponse>(`${this.base}/update-info/${fileId}`, request)
     }
-
-    return this.http.put<FileItem>(`${this.base}/update/${fileId}`, form)
-
-  }
-
-  updateFileInfo(fileId: number, get: { folderId?: number, phoneNumber?: string, notes?: string, isPrivate?: boolean }): Observable<FileItem> {
-
-    const payload: Partial<{ folderId: number, notes: string, phoneNumber: string, isPrivate: boolean }> = {}
-    if (typeof get.folderId === 'number'){ 
-        payload.folderId = get.folderId; 
-      }
-    if (get.phoneNumber?.trim()) {
-      payload.phoneNumber = get.phoneNumber.trim();
-    }
-    if (get.notes?.trim()) {
-      payload.notes = get.notes.trim();
-    }
-    if (typeof get.isPrivate === 'boolean') {
-      payload.isPrivate = get.isPrivate
-    }
-    return this.http.patch<FileItem>(`${this.base}/update-info/${fileId}`, payload)
-
-  }
-
-  downloadFile(fileId: number): Observable<Blob>{
-    return this.http.get(`${this.base}/download/${fileId}`,{responseType: 'blob'})
-  }
-
-  async deleteFiles(fileId: number , notes?: string): Promise<FileItem>{
-     
-    let params = new HttpParams();
-    if(notes?.trim()){
-      params = params.set('notes' , notes.trim())
+    downloadFile(fileId: number):Observable<Blob>{
+        return this.http.get(`${this.base}/download/${fileId}`, {responseType: 'blob' as 'blob'})
     }
 
-    return firstValueFrom(
-      this.http.delete<FileItem>(`${this.base}/${fileId}`,{params})
-    )
+    deleteFile(fileId: number , notes?: string): Observable<{message: string}>{
+        let params = new HttpParams();
+        if(notes){
+            params = params.set('notes' , notes)
+        }
+        return this.http.delete<{message: string}>(`${this.base}/${fileId}`, {params})
+    }
 
-  }
+
+   downloadFileToDevice(fileId: number , fileName: string): void{
+    this.downloadFile(fileId).subscribe(blob =>{
+        const url = window.URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = fileName;
+        link.click();
+        window.URL.revokeObjectURL(url)
+    });
+   }
 
 
 

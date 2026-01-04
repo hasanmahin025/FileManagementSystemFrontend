@@ -1,64 +1,57 @@
-import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { environment } from "./environment";
+import { HttpClient, HttpParams } from "@angular/common/http";
+import { ShareableUser, ShareByEmailRequest, SharedItem, ShareRequest, ShareResponse } from "./models/models";
 import { Observable } from "rxjs";
-
 
 @Injectable({
   providedIn: 'root'
-
 })
 
-export class Sharing {
-  constructor(private http: HttpClient) { }
+export class Sharing{
+  private base = `${environment}/share`
+  constructor(private http: HttpClient){}
 
-  private base = `${environment.apiUrl}/api/share`
-
-  sharedfileByUserId(fileId: number): Observable<any> {
-    return this.http.post(`${this.base}/file/${fileId}`, {})
+  shareFile(fileId: number , request: ShareRequest): Observable<ShareResponse>{
+    return this.http.post<ShareResponse>(`${this.base}/file/${fileId}`, request)
   }
-
-  getFileShare(fileId: number): Observable<any> {
-    return this.http.get(`${this.base}/file/${fileId}`)
+  shareFileByEmail(fileId: number , request: ShareByEmailRequest):Observable<ShareResponse>{
+    return this.http.post<ShareResponse>(`${this.base}/${fileId}/email`, request)
   }
-
-  sharedByEmail(fileId: number, payload: any): Observable<any> {
-    return this.http.post(`${this.base}/file/${fileId}/email`, payload)
+  shareFolderByUserId(folderId: number , request:ShareRequest): Observable<ShareResponse>{
+    return this.http.post<ShareResponse>(`${this.base}/folder/${folderId}`, request)
   }
-
-  deleteUnsharedFile(fileId: number, sharedWithUserId: number): Observable<any> {
-    return this.http.delete(`${this.base}/file/${fileId}/user/${sharedWithUserId}`)
+  shareFolderByEmail(folderId: number , request: ShareByEmailRequest): Observable<ShareResponse>{
+    return this.http.post<ShareResponse>(`${this.base}/folder/${folderId}/email`, request)
   }
-
-  sharedFolderByUserId(folderId: number, payload: any): Observable<any> {
-    return this.http.post(`${this.base}/folder/${folderId}`, payload)
+  getFileShares(fileId: number): Observable<ShareResponse[]>{
+    return this.http.get<ShareResponse[]>(`${this.base}/file/${fileId}`)
   }
-
-  getFolderShare(folderId: number): Observable<any> {
-    return this.http.get(`${this.base}/folder/${folderId}`)
+  getFolderShares(folderId: number): Observable<ShareResponse[]>{
+    return this.http.get<ShareResponse[]>(`${this.base}/folder/${folderId}`)
   }
-
-  sharedFolderByEmail(folderId: number, payload: any): Observable<any> {
-    return this.http.post(`${this.base}/folder/${folderId}/email`, payload)
+  getItemSharedWithMe():Observable<SharedItem[]>{
+    return this.http.get<SharedItem[]>(`${this.base}/with-me`)
+  }
+  getItemSharedByMe():Observable<SharedItem[]>{
+    return this.http.get<SharedItem[]>(`${this.base}/by-me`)
   }
 
-  deleteUnshareFolder(folderId: number, sharedfileByUserId: Number): Observable<any> {
-    return this.http.delete(`${this.base}/folder/${folderId}/user/${sharedfileByUserId}`)
+  sharableUsers(searchTerm?: string): Observable<ShareableUser[]>
+  {
+    let params = new HttpParams();
+    if(searchTerm){
+      params = params.set('searchTerm', searchTerm)
+    }
+    return this.http.get<ShareableUser[]>(`${this.base}/users`, {params})
   }
-  iteamShareWithme(): Observable<any> {
-    return this.http.get(`${this.base}/with-me`)
+  unshareFile(fileId: number , sharedWithUserId: number): Observable<{message: string}>{
+    return this.http.delete<{message: string}>(`${this.base}/file/${fileId}/user/${sharedWithUserId}`)
   }
-  getIteamSharedByme(): Observable<any> {
-    return this.http.get(`${this.base}/by-me`)
+  unshareFolder(folderId: number , sharedWithUserId: number): Observable<{message: string}>{
+    return this.http.delete<{message: string}>(`${this.base}/folder/${folderId}/user/${sharedWithUserId}`)
   }
 
-  getSharableUser(searchTerm: string): Observable<any> {
-    return this.http.get(`${this.base}/users`, {
-      params: {
-        search: searchTerm
-      }
-    })
-  }
 
 
 }

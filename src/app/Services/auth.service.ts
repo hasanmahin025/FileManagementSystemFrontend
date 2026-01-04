@@ -13,7 +13,7 @@ import { Observable, tap } from "rxjs";
 export class AuthService{
      
   private http = inject(HttpClient)
-  private base = `${environment.apiUrl}/api/user-management`
+  private base = `${environment.apiUrl}/user-management`
   private router = inject(Router)
 
  //Token Works // set Method

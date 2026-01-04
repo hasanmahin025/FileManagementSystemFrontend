@@ -1,75 +1,54 @@
-import { HttpClient } from "@angular/common/http";
+import { HttpClient, HttpParams } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { environment } from "./environment";
+import { CreateUserRequest, PaginateUsersRequest, PaginateUsersResponse, UserResponse } from "./models/models";
 import { Observable } from "rxjs";
-import { Admin } from "./models/models";
 
 @Injectable({
     providedIn: 'root'
 })
+export class AdminService{
+    constructor(private http: HttpClient){}
+    private base = `${environment.apiUrl}/Admin-management`;
 
-export class AdminManagement {
-    constructor(private http: HttpClient) { }
-
-    private base = `${environment.apiUrl}/Admin-management`
-
-    userCreateByAdmin(req: { userName: string, email: string, password: string }): Observable<any> {
-
-        return this.http.post(`${this.base}/Add-user`, req)
+    addUser(request : CreateUserRequest ): Observable<UserResponse>{
+        return this.http.post<UserResponse>(`${this.base}/Add-user` , request)
     }
 
-    adminCreatebySuperAdmin(req: { userName: string, email: string, password: string }): Observable<any> {
-        return this.http.post(`${environment}/Add-admin`, req)
+    addAdmin(request: CreateUserRequest): Observable<UserResponse>{
+        return this.http.post<UserResponse>(`${this.base}/Add-admin`, request)
     }
-    GetUserById(userId: number): Observable<any> {
-
-        return this.http.get(`${environment}/Get-user/${userId}`)
-
+    getUserById(userId: number): Observable<UserResponse>{
+       return this.http.get<UserResponse>(`${this.base}/Get-user/${userId}`)  
     }
-
-    GetUserByEmail(email: string): Observable<Admin> {
-        return this.http.get<Admin>(`{${this.base}/Get-user-by-email/${email}`)
+    getUserByEmail(email: string): Observable<UserResponse>{
+        return this.http.get<UserResponse>(`${this.base}/Get-user-by-email/${email}`)
     }
-    GetByUsername(userName: string): Observable<any> {
-        return this.http.get(`${this.base}/Get-user-by-username/${userName}`)
+    getUserByUserName(username: string):Observable<UserResponse>{
+        return this.http.get<UserResponse>(`${this.base}/Get-user-by-username/${username}`)
     }
-
-    GetAllUserByUserAndAdmin(req: Admin): Observable<any> {
-        return this.http.get(`${this.base}/Get-all-admins-with-users`, {
-            params: {
-                pageNumber: req.PageNumber?.toString() ?? '',
-                PageSize: req.PageSize?.toString() ?? '',
-                SearchTerm: req.SearchTerm?.toString() ?? '',
-                SortBy: req.SortBy?.toString() ?? '',
-                SortAscending: req.SortAscending?.toString() ?? ''
+    getAllUsers(request?: PaginateUsersRequest):Observable<PaginateUsersResponse>{
+        let params = new HttpParams();
+        if(request){
+            if(request.pageNumber !== undefined){
+                params = params.set('pageNumber', request.pageNumber.toString())
+            }
+            if(request.pageSize !== undefined){
+                params = params.set('pageSize' , request.pageSize.toString())
+            }
+            if (request.searchTerm !== undefined) {
+                params = params.set('SearchTerm', request.searchTerm);
 
             }
-        })
-    }
-    GetAllUser(req: Admin): Observable<any> {
-        return this.http.get(`${this.base}/Get-all-users`, {
-            params: {
-                pageNumber: req.PageNumber?.toString() ?? '',
-                PageSize: req.PageSize?.toString() ?? '',
-                SearchTerm: req.SearchTerm?.toString() ?? '',
-                SortBy: req.SortBy?.toString() ?? '',
-                SortAscending: req.SortAscending?.toString() ?? ''
+            if (request.sortBy !== undefined){ 
+                params = params.set('SortBy', request.sortBy);
             }
-        })
+            if (request.sortAscending !== undefined) {
+                params = params.set('SortAscending', request.sortAscending.toString());
+
+           }
+           
+        }
+        return this.http.get<PaginateUsersResponse>(`${this.base}/Get-all-users`, { params });
     }
-    UpdateUserToAdmin(userId: number ,req:{  userName:string , email:string , password:string}):Observable<any>{
-        return this.http.put(`${this.base}/Update-user/${userId}`,req)
-    }
-
-    DeleteUser(userId: number): Observable<any>{
-        return this.http.delete(`${this.base}/Delete-user/${userId}`)
-    }
-
-
-
-
-
-
-
-
 }

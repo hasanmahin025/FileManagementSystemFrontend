@@ -346,12 +346,15 @@ body {
   align-items: center;
   margin-bottom: 20px;
   padding: 8px 0;
+  
 }
 
 .toolbar-left,
 .toolbar-right {
   display: flex;
   gap: 8px;
+  cursor: pointer;
+  
 }
 
 .view-btn.active {
