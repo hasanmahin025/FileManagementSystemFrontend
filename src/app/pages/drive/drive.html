@@ -1,3 +1,56 @@
+<div class="main-content">
+    <main class="content-area">
+        <div class="toolbar">
+            <div style="display: flex; align-items: center; gap: 12px;">
+                <button *ngIf="currentFolderId !== null" (click)="goBack()" class="back-btn" title="go back">
+                    <i class="fas fa-arrow-left"></i>
+                </button>
+                <h3>My Drive</h3>
+            </div>
+        </div>
 
-    <h1>My Drives Works</h1>
-   
+        <div class="grid" *ngIf="!isLoading && contents">
+            <div *ngIf = "false">
+                <i class="fas fa-spinner fa-spin">
+
+                </i>
+                <p>Loading...</p>
+
+            </div>
+
+        </div>
+          <div *ngIf="!isLoading && contents.folders.length>0" class="section">
+            <h4>Folders</h4>
+            <div class="grid-container">
+                <button class="card" *ngFor="let folder of contents.folders" (click)="onFolderClick(folder.id)">
+                    <div class="card-preview">
+                        <i class="fas fa-folder"></i>
+                    </div>
+                    <div class="card-info">
+                        <span class="card-title">{{folder.name}}</span>
+                    </div>
+
+                </button>
+            </div>
+          </div>
+          <div *ngIf="!isLoading && contents.files.length>0" class="section">
+            <h4>Files</h4>
+          <div class="grid-container">
+            <div class="card" *ngFor="let file of contents.files">
+                <div class="card-preview">
+                    <i class="fas fa-file-alt"></i>
+                </div>
+                <div class="card-info">
+                    <span class="card-title">{{file.fileName}}</span>
+                    <span class="card-meta">PDF File</span>
+                </div>
+            </div>
+          </div>
+          </div>
+          <div *ngIf="contents.folders.length === 0 && contents.files.length === 0" class="empty-state">
+            <i class="fas fa-folder-open"></i>
+            <p>Create a new Folder or Upload a file</p>
+          </div> 
+    </main>
+
+</div>

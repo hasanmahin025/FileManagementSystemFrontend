@@ -3,11 +3,37 @@
     
     <aside class="sidebar">
 
-      <button class="new-btn">
+      <button class="new-btn" (click) = "toggleDropdown()">
         <i class="fas fa-plus-circle icon-medium"></i>
         <span>New</span>
       </button>
 
+      <div class="dropdown" *ngIf = "dropdownOpen">
+         <button class="dropdown-item" (click) ="openFilePicker(fileInput)">
+          <i class="fas fa-file-upload"></i>
+          <span>Upload file</span>
+         </button>
+      <button class="dropdown-item" (click) = "openCreateFolder()">
+       <i class="fas fa-folder-plus"></i>
+       <span>New folder</span>
+      </button>
+    </div>
+      <input #fileInput type="file" class="hidden-file-input"(change) = "openFileSelected($event)"/>
+      <div class="modal-backdrop" *ngIf="showFolderModel" (click) = "closeFolderModel()">
+        <div class="modal" (click) = "$event.stopPropagation()">
+          <h3>Create Folder</h3>
+          <label class="label">Folder Name</label>
+          <input class="input" [(ngModel)] = "folderName" placeholder="folder Name">
+           
+          <div class="modal-actions">
+            <button class="btn" (click) = "closeFolderModel()" [disabled]="isCreating">Cancel</button>
+            <button class="btn primary" (click) = "createFolder()"[disabled] = "isCreating">
+              {{isCreating ? 'Creating...': 'Create'}}
+            </button>
+          </div>
+
+        </div>
+      </div>
       <nav class="sidebar-nav">
         <a routerLink="/my-drive" routerLinkActive="active" class="nav-item">
           <i class="fas fa-hdd"></i>
@@ -42,7 +68,7 @@
 
         <a routerLink="/admin" routerLinkActive="active" class="nav-item">
           <i class="fas fa-user-tie"></i>
-          <span>Admin</span>
+          <span>User Management</span>
         </a>
       </nav>
 

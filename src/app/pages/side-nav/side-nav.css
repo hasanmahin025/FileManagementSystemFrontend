@@ -4,11 +4,6 @@
   box-sizing: border-box;
 }
 
-
-
-
-
-/* Icon Sizes */
 .icon-large {
   font-size: 24px;
 }
@@ -17,7 +12,6 @@
   font-size: 20px;
 }
 
-/* File Type Colors */
 .folder-color {
   color: #5f6368;
 }
@@ -46,16 +40,13 @@
   color: #f9ab00;
 }
 
-
-
-/* Main Content */
 .main-content {
   display: flex;
   flex: 1;
   overflow: hidden;
 }
 
-/* Sidebar */
+
 .sidebar {
   width: 256px;
   padding: 12px 8px;
@@ -108,7 +99,7 @@
   border: none;
   cursor: pointer;
   text-decoration: none;
-  color: #5f6368;
+  color: #000000;
   font-size: 14px;
   transition: background-color 0.2s;
   width: 100%;
@@ -168,7 +159,6 @@
   text-decoration: underline;
 }
 
-/* Content Area */
 .content-area {
   flex: 1;
   display: flex;
@@ -178,7 +168,6 @@
   background: #f8f9fa;
 }
 
-/* Breadcrumb */
 .breadcrumb {
   display: flex;
   align-items: center;
@@ -216,7 +205,6 @@
   cursor: default;
 }
 
-/* Toolbar */
 .toolbar {
   display: flex;
   justify-content: space-between;
@@ -238,7 +226,6 @@
   background: #e8eaed;
 }
 
-/* Section */
 .section {
   margin-bottom: 32px;
 }
@@ -252,7 +239,6 @@
   letter-spacing: 0.5px;
 }
 
-/* Grid View */
 .grid-view {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
@@ -328,7 +314,7 @@
   height: 32px;
 }
 
-/* Responsive */
+
 @media (max-width: 768px) {
   .sidebar {
     display: none;
@@ -347,17 +333,179 @@
   }
 }
 
-@media (max-width: 480px) {
-  .dashboard-header {
-    padding: 8px;
-  }
-  
-  .header-center {
-    display: none;
-  }
-}
 .dashboard-container {
   display: flex;
   flex-direction: column;
   height: 100vh;
+}
+
+.hidden-file-input {
+  display: none;
+}
+
+
+
+.new-btn {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 10px;
+  background-color: white;
+  border: 1px solid #dadce0;
+  border-radius: 24px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  color: #202124;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  transition: all 0.2s;
+  width: 50%;
+  position: relative;
+}
+
+.new-btn:hover {
+  background-color: #f8f9fa;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+}
+
+.icon-medium {
+  font-size: 20px;
+  color: #1a73e8;
+}
+
+.dropdown {
+  position: flex;
+  top: 10px;
+  left: 10px;
+  background-color: white;
+  border: 1px solid #dadce0;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  z-index: 1000;
+  min-width: 200px;
+  overflow: hidden;
+}
+
+.dropdown-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  background: none;
+  border: none;
+  width: 100%;
+  text-align: left;
+  cursor: pointer;
+  font-size: 14px;
+  color: #202124;
+  transition: background-color 0.2s;
+}
+
+.dropdown-item:hover {
+  background-color: #f1f3f4;
+}
+
+.dropdown-item i {
+  font-size: 16px;
+  color: #5f6368;
+  width: 20px;
+}
+
+.hidden-file-input {
+  display: none !important;
+  visibility: hidden;
+  position: absolute;
+  width: 0;
+  height: 0;
+}
+
+.modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+}
+
+.modal {
+  background-color: white;
+  border-radius: 8px;
+  padding: 24px;
+  min-width: 400px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+}
+
+.modal h3 {
+  margin: 0 0 20px 0;
+  font-size: 18px;
+  font-weight: 500;
+  color: #202124;
+}
+
+.label {
+  display: block;
+  font-size: 14px;
+  color: #5f6368;
+  margin-bottom: 8px;
+}
+
+.input {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #dadce0;
+  border-radius: 4px;
+  font-size: 14px;
+  margin-bottom: 20px;
+  box-sizing: border-box;
+}
+
+.input:focus {
+  outline: none;
+  border-color: #1a73e8;
+  box-shadow: 0 0 0 2px rgba(26, 115, 232, 0.1);
+}
+
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+.btn {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btn:not(.primary) {
+  background-color: transparent;
+  color: #1a73e8;
+}
+
+.btn:not(.primary):hover:not(:disabled) {
+  background-color: #f1f3f4;
+}
+
+.btn.primary {
+  background-color: #1a73e8;
+  color: white;
+}
+
+.btn.primary:hover:not(:disabled) {
+  background-color: #1765cc;
 }
