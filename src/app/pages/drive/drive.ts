@@ -1,4 +1,3 @@
-// src/app/pages/drive/drive.ts
 import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { FolderService } from '../../Services/Folder.services';
