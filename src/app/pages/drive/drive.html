@@ -9,40 +9,53 @@
             </div>
         </div>
 
-        <div class="grid" *ngIf="!isLoading && contents">
-            <div *ngIf = "false">
-                <i class="fas fa-spinner fa-spin">
-
-                </i>
-                <p>Loading...</p>
-
-            </div>
-
-        </div>
           <div *ngIf="!isLoading && contents.folders.length>0" class="section">
             <h4>Folders</h4>
             <div class="grid-container">
-                <button class="card" *ngFor="let folder of contents.folders" (click)="onFolderClick(folder.id)">
+                <button class="card"  *ngFor="let folder of contents.folders"  (click)="onFolderClick(folder.id)">
                     <div class="card-preview">
                         <i class="fas fa-folder"></i>
+                        <div class="menu" [class.active]="activeMenuId === folder.id && activeMenuType === 'folder'" >
+                            <button class="kebab-icon" (click)="toggleMenu(folder.id , 'folder' , $event)">⋮</button>
+                            <ul class="dropdown" *ngIf="activeMenuId === folder.id && activeMenuType === 'folder'" (click)="$event.stopPropagation()">
+                                <li (click)="onFolderClick(folder.id)">Open</li>
+                                <li>Share</li>
+                                <li (click)="handleAction('Add to Favourite', folder); $event.stopPropagation()">Add to Favourite</li>
+                                <li (click)="handleAction('move to Trash', folder); $event.stopPropagation()">Move to Trash</li>
+                            </ul>
+                        </div>
                     </div>
                     <div class="card-info">
                         <span class="card-title">{{folder.name}}</span>
                     </div>
 
                 </button>
-            </div>
+          </div>
           </div>
           <div *ngIf="!isLoading && contents.files.length>0" class="section">
             <h4>Files</h4>
           <div class="grid-container">
             <div class="card" *ngFor="let file of contents.files">
                 <div class="card-preview">
-                    <i class="fas fa-file-alt"></i>
+                    <i class="fas"
+                     [class.fa-file-image]="file.fileName.endsWith('.jpg') || file.fileName.endsWith('.png')"
+                     [class.fa-file-pdf]="file.fileName.endsWith('.pdf')"
+                     [class.fa-file]="!file.fileName.endsWith('jpg') && !file.fileName.endsWith('.pdf')"></i>
+                    <div class="menu" [class.active]="activeMenuId === file.id && activeMenuType === 'file'" >
+                        <button class="kebab-icon"(click)="toggleMenu(file.id, 'file', $event)">⋮</button>
+                        <ul class="dropdown" *ngIf="activeMenuId === file.id && activeMenuType==='file'"
+                        (click)="$event.stopPropagation()">
+                            <li>Preview</li>
+                            <li (click)="handleFileAction('Download',file); $event.stopPropagation()" >Download</li>
+                            <li>Share</li>
+                            <li (click)="handleFileAction('Add to Favourite' , file); $event.stopPropagation()">Add to Favourite</li>
+                            <li (click)="handleFileAction('Delete' , file); $event.stopPropagation()">Move to Trash</li>
+                        </ul>
+                    </div>
                 </div>
                 <div class="card-info">
                     <span class="card-title">{{file.fileName}}</span>
-                    <span class="card-meta">PDF File</span>
+                    
                 </div>
             </div>
           </div>

@@ -8,7 +8,7 @@ import { AddFavouriteRequest, FavouriteCheckResponse, FavouriteResponse } from "
     providedIn: 'root'
 })
 export class Favourite{
-    private base = `${environment}/favorites`
+    private base = `${environment.apiUrl}/favorites`
     constructor(private http: HttpClient){}
    
     getFavourites(): Observable<FavouriteResponse[]>{
@@ -25,7 +25,7 @@ export class Favourite{
         return this.http.get<FavouriteCheckResponse>(`${this.base}/check`, {params})
     }
     addFavorite(request: AddFavouriteRequest): Observable<FavouriteResponse>{
-        return this.http.post<FavouriteResponse>(this.base , request)
+        return this.http.post<FavouriteResponse>(`${this.base}`, request)
     }
     removeFavorite(favoriteId: number): Observable<{ message: string }> {
     return this.http.delete<{ message: string }>(`${this.base}/${favoriteId}`);

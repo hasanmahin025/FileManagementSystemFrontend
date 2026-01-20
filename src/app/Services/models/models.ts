@@ -17,7 +17,7 @@ export interface RevokeTokenRequest{
   refreshToken:string;
 }
 export interface CreateUserRequest{
-  userName?:string;
+  userName:string;
   email:string;
   password:string;
 }
@@ -28,7 +28,7 @@ export interface UpadteUserRequest{
 }
 export interface UserResponse{
   id:number;
-  UserName:string;
+  userName:string;
   email:string;
 }
 export interface CreateUserResponse{
@@ -50,6 +50,11 @@ export interface PaginateUsersResponse{
   pageSize: number;
   totalPages: number;
 }
+export interface UpadteUserRequest{
+  userName:string;
+  email:string;
+  password?:string;
+}
 export interface FileUploadRequest{
   file:File;
   folderId?: number | null;
@@ -62,10 +67,10 @@ export interface FileUpdateInfoRequest{
   isPrivate?: boolean;
 }
 export interface FileResponse{
-  fileId: number;
+  id: number;
   fileName: string;
   contentType: string;
-  fileSize:Number;
+  fileSize:number;
   filePath:string;
   phoneNumber?: string;
   ownerId: number;

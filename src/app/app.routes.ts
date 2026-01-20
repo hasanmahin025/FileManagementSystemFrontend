@@ -3,14 +3,13 @@ import { Home } from './pages/home/home';
 import { Welcome } from './pages/welcome/welcome';
 import { Login } from './pages/login/login';
 import { guestGuard } from './Services/guard';
-
-import { Favourite } from './pages/favourite/favourite';
 import { Trash } from './pages/trash/trash';
 import { Drive } from './pages/drive/drive';
 import { Layout } from './layout/layout';
 import { SharedByMe } from './pages/shared-by-me/shared-by-me';
 import { SharedWithMe } from './pages/shared-with-me/shared-with-me';
 import { Admin } from './pages/admin/admin';
+import { Favourites } from './pages/favourites/favourites';
 
 export const routes: Routes = [
 
@@ -37,7 +36,7 @@ export const routes: Routes = [
         },
         {
           path:'favourite',
-          component:Favourite
+          component:Favourites
         },
         {
           path:'shared-by-me',

@@ -24,8 +24,11 @@ export class FolderService{
         return this.http.get<FolderResponse[]>(this.base , {params});
     }
     getFolderContent(folderId: number ): Observable<FolderContentsResponse>{
-
-        return this.http.get<FolderContentsResponse>(`${this.base}/${folderId}/contents`)
+          console.log('Calling folder API:', `${this.base}/${folderId}/contents`);
+ 
+        return this.http.get<FolderContentsResponse>(`${this.base}/${folderId}/contents`,{
+            
+        })
 
     }
     getRootContents():Observable<FolderContentsResponse>{

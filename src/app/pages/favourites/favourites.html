@@ -1,0 +1,83 @@
+<div class="main-content">
+    <main class="content-area">
+        <div class="toolbar">
+             <div style="display: flex; align-items: center; gap: 12px;">
+                <button *ngIf="currentFolderId !== null" (click)="goBack()"class="back-btn" title="go back">
+                    <i class="fas fa-arrow-left">
+
+                    </i>
+
+                </button>
+                <h3>Favourites</h3>
+
+             </div>
+        </div>
+
+        <div *ngIf="!isLoading && contents.folders.length > 0" class="section">
+            <h4>Folders</h4>
+            <div class="grid-container">
+                <button class="card" *ngFor="let folder of contents.folders" (click)="onFolderClick(folder.id)">
+                    <div class="card-preview">
+                     <i class="fas fa-folder"></i>
+                     <div class="menu" [class.active]="activeMenuId === folder.id && activeMenuType === 'folder'">
+                          <button class="kebab-icon" (click)="toggleMenu(folder.id, 'folder', $event)">⋮</button>
+                          <ul class="dropdown" *ngIf="activeMenuId === folder.id && activeMenuType === 'folder'" (click)="$event.stopPropagation()">
+                                <li (click)="onFolderClick(folder.id)">Open</li>
+                                <li>Share</li>
+                                <li (click)="handleFolderAction('Remove Form Favourite',folder); $event.stopPropagation()">Remove Favourite</li>
+                          </ul>
+                     </div>
+                    </div>
+                    <div class="card-info">
+                      <span class="card-title">{{folder.name}}</span>
+                      <i *ngIf="folder.isFavourite" 
+                         class="fas fa-star" 
+                           style="margin-left: auto; color: #fdb500; font-size: 14px;"
+                           title="Favourite"></i>
+                    </div>
+                </button>
+
+            </div>
+
+        </div>
+
+        <div *ngIf="!isLoading && contents.files.length > 0" class="section">
+        <h4>Files</h4>
+            <div class="grid-container">
+                  <div class="card" *ngFor="let file of contents.files">
+                    <div class="card-preview">
+                         <i class="fas"
+                         [class.fa-file-image]="file.name.endsWith('.jpf') && file.name.endsWith('.png')"
+                         [class.fa-file-pdf]="file.name.endsWith('.pdf')"
+                         [class.fa-file]="!file.name.endsWith('jpg') && !file.name.endsWith('.pdf')">
+                        </i>
+                        <div class="menu" [class.active]="activeMenuId === file.id && activeMenuType === 'file'" >
+                        <button class="kebab-icon"(click)="toggleMenu(file.id, 'file', $event)">⋮</button>
+                        <ul class="dropdown" *ngIf="activeMenuId === file.id && activeMenuType==='file'"
+                        (click)="$event.stopPropagation()">
+                            <li>Preview</li>
+                            <li (click)="handleFileAction('Download', file); $event.stopPropagation()">Download</li>
+                            <li>Share</li>
+                            <li (click)="handleFileAction('Remove From Favourite' , file); $event.stopPropagation()">Remove Favourite</li>
+                        </ul>
+                    </div>
+                    </div>
+                     <div class="card-info">
+                        <span class="card-title">
+                             {{file.name}}
+                             <i *ngIf="file.isFavourite" 
+                           class="fas fa-star" 
+                            style="margin-left: 70px; color: #fbbf24; font-size: 14px;"
+                            title="Favourite"></i>
+                        </span>
+                     </div>
+                  </div>
+            </div>
+        </div>
+             <div *ngIf="contents.folders.length === 0 && contents.files.length === 0" class="empty-state">
+            <i class="fas fa-folder-open"></i>
+            <p>Create a new Folder or Upload a file</p>
+          </div> 
+
+    </main>
+</div>
